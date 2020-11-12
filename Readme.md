@@ -15,11 +15,11 @@
 
 #### 1-user-save -changes-document.jmx
 
-- server-name-or-ip: websocket host
-- port: websocket port
-- document-url: url to docx document
-- changes: only fit a specific `document-url`
-- save-changes-throughput-per-minute: amount of saveChanges per minute(jmeter constant throughput timer)
+- `server-name-or-ip`: websocket host
+- `port`: websocket port
+- `document-url`: url to docx document
+- `changes`: only fit a specific `document-url`
+- `save-changes-throughput-per-minute`: amount of saveChanges per minute(jmeter constant throughput timer)
 
   [1]: https://github.com/ONLYOFFICE/DocumentServer
 
