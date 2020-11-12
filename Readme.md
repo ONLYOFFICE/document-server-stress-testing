@@ -11,7 +11,7 @@
 
 3. set property `websocket.thread.stop.policy=wsclose` according to [instructions](https://github.com/ptrd/jmeter-websocket-samplers#connections)
 
-### User Defined Variables owerview
+### User Defined Variables overview
 
 #### 1-user-save -changes-document.jmx
 
