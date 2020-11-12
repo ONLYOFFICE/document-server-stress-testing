@@ -40,11 +40,6 @@
               <stringProp name="Argument.value">80</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
-            <elementProp name="path-prefix" elementType="Argument">
-              <stringProp name="Argument.name">path-prefix</stringProp>
-              <stringProp name="Argument.value">/99.99.99-2172</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
             <elementProp name="document-url" elementType="Argument">
               <stringProp name="Argument.name">document-url</stringProp>
               <stringProp name="Argument.value">https://nct.onlyoffice.com/sh/XyY</stringProp>
@@ -81,7 +76,7 @@
           <boolProp name="createNewConnection">true</boolProp>
           <stringProp name="server">${server-name-or-ip}</stringProp>
           <stringProp name="port">${port}</stringProp>
-          <stringProp name="path">${path-prefix}/doc/${doc-id}/c/806/e204ietx/websocket</stringProp>
+          <stringProp name="path">/doc/${doc-id}/c/806/e204ietx/websocket</stringProp>
           <boolProp name="binaryPayload">false</boolProp>
           <stringProp name="requestData">[&quot;{\&quot;type\&quot;:\&quot;auth\&quot;,\&quot;docid\&quot;:\&quot;${doc-id}\&quot;,\&quot;documentCallbackUrl\&quot;:\&quot;\&quot;,\&quot;token\&quot;:\&quot;fghhfgsjdgfjs\&quot;,\&quot;user\&quot;:{\&quot;id\&quot;:\&quot;uid-1\&quot;,\&quot;username\&quot;:\&quot;John Smith\&quot;,\&quot;firstname\&quot;:null,\&quot;lastname\&quot;:null,\&quot;indexUser\&quot;:-1},\&quot;editorType\&quot;:0,\&quot;lastOtherSaveTime\&quot;:-1,\&quot;block\&quot;:[],\&quot;sessionId\&quot;:null,\&quot;sessionTimeConnect\&quot;:null,\&quot;sessionTimeIdle\&quot;:0,\&quot;documentFormatSave\&quot;:65,\&quot;view\&quot;:false,\&quot;isCloseCoAuthoring\&quot;:false,\&quot;openCmd\&quot;:{\&quot;c\&quot;:\&quot;open\&quot;,\&quot;id\&quot;:\&quot;${doc-id}\&quot;,\&quot;userid\&quot;:\&quot;uid-1\&quot;,\&quot;format\&quot;:\&quot;docx\&quot;,\&quot;url\&quot;:\&quot;${document-url}\&quot;,\&quot;title\&quot;:\&quot;new (140).docx\&quot;,\&quot;lcid\&quot;:9,\&quot;nobase64\&quot;:true},\&quot;lang\&quot;:null,\&quot;mode\&quot;:null,\&quot;permissions\&quot;:{\&quot;comment\&quot;:true,\&quot;download\&quot;:true,\&quot;edit\&quot;:true,\&quot;fillForms\&quot;:true,\&quot;modifyFilter\&quot;:true,\&quot;modifyContentControl\&quot;:true,\&quot;review\&quot;:true},\&quot;jwtOpen\&quot;:\&quot;\&quot;}&quot;]</stringProp>
           <boolProp name="TLS">false</boolProp>

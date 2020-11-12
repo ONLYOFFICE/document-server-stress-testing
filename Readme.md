@@ -16,8 +16,7 @@
 #### 1-user-save -changes-document.jmx
 
 - `server-name-or-ip`: websocket host
-- `port`: websocket port
-- `path-prefix`: whole websocket url look like ws://${server-name-or-ip}:${port}${path-prefix}/doc/${doc-id}/c/806/e204ietx/websocket
+- `port`: websocket port, whole url look like ws://${server-name-or-ip}:${port}/doc/${doc-id}/c/806/e204ietx/websocket
 - `document-url`: url to docx document
 - `changes`: only fit a specific `document-url` and [ONLYOFFICE Document Server][1] version
 - `save-changes-throughput-per-minute`: amount of saveChanges per minute(jmeter constant throughput timer)
