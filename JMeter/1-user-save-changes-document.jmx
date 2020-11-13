@@ -11,13 +11,54 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="number-of-threads" elementType="Argument">
+            <stringProp name="Argument.name">number-of-threads</stringProp>
+            <stringProp name="Argument.value">20</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">JMeter thread group property</stringProp>
+          </elementProp>
+          <elementProp name="server-name-or-ip" elementType="Argument">
+            <stringProp name="Argument.name">server-name-or-ip</stringProp>
+            <stringProp name="Argument.value">isa2.teamlab.info</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">websocket host</stringProp>
+          </elementProp>
+          <elementProp name="port" elementType="Argument">
+            <stringProp name="Argument.name">port</stringProp>
+            <stringProp name="Argument.value">80</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">websocket port, whole url look like `ws://${server-name-or-ip}:${port}/doc/${doc-id}/c/806/e204ietx/websocket`</stringProp>
+          </elementProp>
+          <elementProp name="document-url" elementType="Argument">
+            <stringProp name="Argument.name">document-url</stringProp>
+            <stringProp name="Argument.value">https://nct.onlyoffice.com/sh/XyY</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">url to docx document</stringProp>
+          </elementProp>
+          <elementProp name="changes" elementType="Argument">
+            <stringProp name="Argument.name">changes</stringProp>
+            <stringProp name="Argument.value">[\\\&quot;96;AgAAADEA//8BAAuYvLLoHgAAigAAAAwAAAAAAAAAAAAAAAEAAAAAAAAA9v///y4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\\\&quot;,\\\&quot;58;AgAAADEAAQABAAoAAAAxAF8ANgAzADIAAAAEAAMAAAAKAAAAMQBfADYAMwAyAACAIAAAAAAAAAAAAA==\\\&quot;,\\\&quot;98;AgAAADEAAQABAAoAAAAxAF8ANgAzADMAAAAcACcAAAAKAAAAMQBfADYAMwAzAAoAAAAxAF8ANgAzADEAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\\\&quot;,\\\&quot;34;CgAAADEAXwA2ADMAMwABABwAAQAAAAAAAAAEAAAAAwAAAA==\\\&quot;,\\\&quot;87;AgAAADEAAQABAAoAAAAxAF8ANgAzADEAAAADAAoAAAAxAF8ANgAzADEAQgAAAAAAAAAAAAAACgAAADEAXwA2ADMAMgABAAAACgAAADEAXwA2ADMAMwAB\\\&quot;,\\\&quot;46;CgAAADEAXwA2ADMAMQAeAAMAAAAAAEIAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA==\\\&quot;,\\\&quot;30;CgAAADEAXwA2ADMAMgAWAAQAAAAAAAAAAAAAAAAA\\\&quot;,\\\&quot;26;BgAAADQAMQA4ABYABAAAAAAAAAAAAAAAAAA=\\\&quot;,\\\&quot;98;AgAAADEAAQABAAoAAAAxAF8ANgAzADQAAAAcACcAAAAKAAAAMQBfADYAMwA0AAoAAAAxAF8ANgAzADEAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\\\&quot;,\\\&quot;44;CgAAADEAXwA2ADMAMQABAAMAAQAAAAAAAAAKAAAAMQBfADYAMwA0AAAAAAA=\\\&quot;,\\\&quot;46;CgAAADEAXwA2ADMANAAdABwAAAAAAACAIAAAAAAAAAAAAACAIAAAAAAAAAAAAA==\\\&quot;,\\\&quot;46;CgAAADEAXwA2ADMAMwAdABwAAAAAAACAIAAAAAAAAAAAAACAIAAAAAAAAAAAAA==\\\&quot;,\\\&quot;36;AgAAADIAAQACAAEAAAABAAAACgAAADEAXwA2ADMAMQAAAAAA\\\&quot;,\\\&quot;96;AgAAADEA//8BAAuYvLLoHgAALQEAAAMAAAABAAAAAAAAAAEAAAAAAAAA9v///y4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\\\&quot;,\\\&quot;38;CgAAADEAXwA2ADMANAABABwAAQAAAAAAAAABAAAAMQAAAAMAAAA=\\\&quot;,\\\&quot;38;CgAAADEAXwA2ADMANAABABwAAQAAAAEAAAABAAAAMgAAAAMAAAA=\\\&quot;,\\\&quot;38;CgAAADEAXwA2ADMANAABABwAAQAAAAIAAAABAAAAMwAAAAMAAAA=\\\&quot;]</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">only fit a specific `document-url` and Document Server version</stringProp>
+          </elementProp>
+          <elementProp name="save-changes-throughput-per-minute" elementType="Argument">
+            <stringProp name="Argument.name">save-changes-throughput-per-minute</stringProp>
+            <stringProp name="Argument.value">120</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">amount of saveChanges per minute(jmeter constant throughput timer)</stringProp>
+          </elementProp>
+        </collectionProp>
+      </Arguments>
+      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.num_threads">${number-of-threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <longProp name="ThreadGroup.start_time">1475408602000</longProp>
         <longProp name="ThreadGroup.end_time">1475408602000</longProp>
@@ -28,36 +69,6 @@
         <boolProp name="ThreadGroup.delayedStart">true</boolProp>
       </ThreadGroup>
       <hashTree>
-        <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-          <collectionProp name="Arguments.arguments">
-            <elementProp name="server-name-or-ip" elementType="Argument">
-              <stringProp name="Argument.name">server-name-or-ip</stringProp>
-              <stringProp name="Argument.value">isa2.teamlab.info</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="port" elementType="Argument">
-              <stringProp name="Argument.name">port</stringProp>
-              <stringProp name="Argument.value">80</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="document-url" elementType="Argument">
-              <stringProp name="Argument.name">document-url</stringProp>
-              <stringProp name="Argument.value">https://nct.onlyoffice.com/sh/XyY</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="changes" elementType="Argument">
-              <stringProp name="Argument.name">changes</stringProp>
-              <stringProp name="Argument.value">[\\\&quot;96;AgAAADEA//8BAAuYvLLoHgAAigAAAAwAAAAAAAAAAAAAAAEAAAAAAAAA9v///y4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\\\&quot;,\\\&quot;58;AgAAADEAAQABAAoAAAAxAF8ANgAzADIAAAAEAAMAAAAKAAAAMQBfADYAMwAyAACAIAAAAAAAAAAAAA==\\\&quot;,\\\&quot;98;AgAAADEAAQABAAoAAAAxAF8ANgAzADMAAAAcACcAAAAKAAAAMQBfADYAMwAzAAoAAAAxAF8ANgAzADEAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\\\&quot;,\\\&quot;34;CgAAADEAXwA2ADMAMwABABwAAQAAAAAAAAAEAAAAAwAAAA==\\\&quot;,\\\&quot;87;AgAAADEAAQABAAoAAAAxAF8ANgAzADEAAAADAAoAAAAxAF8ANgAzADEAQgAAAAAAAAAAAAAACgAAADEAXwA2ADMAMgABAAAACgAAADEAXwA2ADMAMwAB\\\&quot;,\\\&quot;46;CgAAADEAXwA2ADMAMQAeAAMAAAAAAEIAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA==\\\&quot;,\\\&quot;30;CgAAADEAXwA2ADMAMgAWAAQAAAAAAAAAAAAAAAAA\\\&quot;,\\\&quot;26;BgAAADQAMQA4ABYABAAAAAAAAAAAAAAAAAA=\\\&quot;,\\\&quot;98;AgAAADEAAQABAAoAAAAxAF8ANgAzADQAAAAcACcAAAAKAAAAMQBfADYAMwA0AAoAAAAxAF8ANgAzADEAAIAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=\\\&quot;,\\\&quot;44;CgAAADEAXwA2ADMAMQABAAMAAQAAAAAAAAAKAAAAMQBfADYAMwA0AAAAAAA=\\\&quot;,\\\&quot;46;CgAAADEAXwA2ADMANAAdABwAAAAAAACAIAAAAAAAAAAAAACAIAAAAAAAAAAAAA==\\\&quot;,\\\&quot;46;CgAAADEAXwA2ADMAMwAdABwAAAAAAACAIAAAAAAAAAAAAACAIAAAAAAAAAAAAA==\\\&quot;,\\\&quot;36;AgAAADIAAQACAAEAAAABAAAACgAAADEAXwA2ADMAMQAAAAAA\\\&quot;,\\\&quot;96;AgAAADEA//8BAAuYvLLoHgAALQEAAAMAAAABAAAAAAAAAAEAAAAAAAAA9v///y4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\\\&quot;,\\\&quot;38;CgAAADEAXwA2ADMANAABABwAAQAAAAAAAAABAAAAMQAAAAMAAAA=\\\&quot;,\\\&quot;38;CgAAADEAXwA2ADMANAABABwAAQAAAAEAAAABAAAAMgAAAAMAAAA=\\\&quot;,\\\&quot;38;CgAAADEAXwA2ADMANAABABwAAQAAAAIAAAABAAAAMwAAAAMAAAA=\\\&quot;]</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-            <elementProp name="save-changes-throughput-per-minute" elementType="Argument">
-              <stringProp name="Argument.name">save-changes-throughput-per-minute</stringProp>
-              <stringProp name="Argument.value">120</stringProp>
-              <stringProp name="Argument.metadata">=</stringProp>
-            </elementProp>
-          </collectionProp>
-        </Arguments>
-        <hashTree/>
         <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random docId" enabled="true">
           <stringProp name="maximumValue">9999999999</stringProp>
           <stringProp name="minimumValue">1000000000</stringProp>
@@ -183,6 +194,11 @@
           <stringProp name="HTTPSampler.connect_timeout"></stringProp>
           <stringProp name="HTTPSampler.response_timeout"></stringProp>
         </HTTPSamplerProxy>
+        <hashTree/>
+        <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="wait conversions" enabled="true">
+          <stringProp name="groupSize">${number-of-threads}</stringProp>
+          <longProp name="timeoutInMs">600000</longProp>
+        </SyncTimer>
         <hashTree/>
         <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="send changes" enabled="true">
           <boolProp name="LoopController.continue_forever">true</boolProp>
@@ -367,7 +383,7 @@
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="TableVisualizer" testclass="ResultCollector" testname="View Results in Table" enabled="false">
-          <boolProp name="ResultCollector.error_logging">true</boolProp>
+          <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
             <value class="SampleSaveConfiguration">
