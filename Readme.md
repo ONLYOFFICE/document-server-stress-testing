@@ -21,6 +21,7 @@
 - `document-url`: url to docx document
 - `changes`: only fit a specific `document-url` and [ONLYOFFICE Document Server][1] version
 - `save-changes-throughput-per-minute`: amount of saveChanges per minute(jmeter constant throughput timer)
+- `read-timeout`: Response (read) timeout (ms) for operations: "open and send auth", "read license", "read auth", "read getLock", "read saveLock", "read unSaveLock"
 
   [1]: https://github.com/ONLYOFFICE/DocumentServer
 

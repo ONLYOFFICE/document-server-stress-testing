@@ -49,14 +49,20 @@
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">amount of saveChanges per minute(jmeter constant throughput timer)</stringProp>
           </elementProp>
+          <elementProp name="read-timeout" elementType="Argument">
+            <stringProp name="Argument.name">read-timeout</stringProp>
+            <stringProp name="Argument.value">1000</stringProp>
+            <stringProp name="Argument.desc">Response (read) timeout (ms) for operations: &quot;open and send auth&quot;, &quot;read license&quot;, &quot;read auth&quot;, &quot;read getLock&quot;, &quot;read saveLock&quot;, &quot;read unSaveLock&quot;</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
       </Arguments>
       <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
+        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <stringProp name="LoopController.loops">1</stringProp>
+          <intProp name="LoopController.loops">-1</intProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">${number-of-threads}</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
@@ -92,7 +98,7 @@
           <stringProp name="requestData">[&quot;{\&quot;type\&quot;:\&quot;auth\&quot;,\&quot;docid\&quot;:\&quot;${doc-id}\&quot;,\&quot;documentCallbackUrl\&quot;:\&quot;\&quot;,\&quot;token\&quot;:\&quot;fghhfgsjdgfjs\&quot;,\&quot;user\&quot;:{\&quot;id\&quot;:\&quot;uid-1\&quot;,\&quot;username\&quot;:\&quot;John Smith\&quot;,\&quot;firstname\&quot;:null,\&quot;lastname\&quot;:null,\&quot;indexUser\&quot;:-1},\&quot;editorType\&quot;:0,\&quot;lastOtherSaveTime\&quot;:-1,\&quot;block\&quot;:[],\&quot;sessionId\&quot;:null,\&quot;sessionTimeConnect\&quot;:null,\&quot;sessionTimeIdle\&quot;:0,\&quot;documentFormatSave\&quot;:65,\&quot;view\&quot;:false,\&quot;isCloseCoAuthoring\&quot;:false,\&quot;openCmd\&quot;:{\&quot;c\&quot;:\&quot;open\&quot;,\&quot;id\&quot;:\&quot;${doc-id}\&quot;,\&quot;userid\&quot;:\&quot;uid-1\&quot;,\&quot;format\&quot;:\&quot;docx\&quot;,\&quot;url\&quot;:\&quot;${document-url}\&quot;,\&quot;title\&quot;:\&quot;new (140).docx\&quot;,\&quot;lcid\&quot;:9,\&quot;nobase64\&quot;:true},\&quot;lang\&quot;:null,\&quot;mode\&quot;:null,\&quot;permissions\&quot;:{\&quot;comment\&quot;:true,\&quot;download\&quot;:true,\&quot;edit\&quot;:true,\&quot;fillForms\&quot;:true,\&quot;modifyFilter\&quot;:true,\&quot;modifyContentControl\&quot;:true,\&quot;review\&quot;:true},\&quot;jwtOpen\&quot;:\&quot;\&quot;}&quot;]</stringProp>
           <boolProp name="TLS">false</boolProp>
           <stringProp name="connectTimeout">20000</stringProp>
-          <stringProp name="readTimeout">30000</stringProp>
+          <stringProp name="readTimeout">${read-timeout}</stringProp>
           <boolProp name="loadDataFromFile">false</boolProp>
           <stringProp name="dataFile"></stringProp>
         </eu.luminis.jmeter.wssampler.RequestResponseWebSocketSampler>
@@ -105,7 +111,7 @@
           <stringProp name="connectTimeout">20000</stringProp>
           <stringProp name="dataType">Text</stringProp>
           <boolProp name="createNewConnection">false</boolProp>
-          <stringProp name="readTimeout">30000</stringProp>
+          <stringProp name="readTimeout">${read-timeout}</stringProp>
           <boolProp name="optional">false</boolProp>
         </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
         <hashTree>
@@ -128,7 +134,7 @@
           <stringProp name="connectTimeout">20000</stringProp>
           <stringProp name="dataType">Text</stringProp>
           <boolProp name="createNewConnection">false</boolProp>
-          <stringProp name="readTimeout">30000</stringProp>
+          <stringProp name="readTimeout">${read-timeout}</stringProp>
           <boolProp name="optional">false</boolProp>
         </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
         <hashTree>
@@ -241,7 +247,7 @@
               <stringProp name="connectTimeout">20000</stringProp>
               <stringProp name="dataType">Text</stringProp>
               <boolProp name="createNewConnection">false</boolProp>
-              <stringProp name="readTimeout">30000</stringProp>
+              <stringProp name="readTimeout">${read-timeout}</stringProp>
               <boolProp name="optional">false</boolProp>
             </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
             <hashTree>
@@ -277,7 +283,7 @@
               <stringProp name="connectTimeout">20000</stringProp>
               <stringProp name="dataType">Text</stringProp>
               <boolProp name="createNewConnection">false</boolProp>
-              <stringProp name="readTimeout">30000</stringProp>
+              <stringProp name="readTimeout">${read-timeout}</stringProp>
               <boolProp name="optional">false</boolProp>
             </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
             <hashTree>
@@ -313,7 +319,7 @@
               <stringProp name="connectTimeout">20000</stringProp>
               <stringProp name="dataType">Text</stringProp>
               <boolProp name="createNewConnection">false</boolProp>
-              <stringProp name="readTimeout">30000</stringProp>
+              <stringProp name="readTimeout">${read-timeout}</stringProp>
               <boolProp name="optional">false</boolProp>
             </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
             <hashTree>
