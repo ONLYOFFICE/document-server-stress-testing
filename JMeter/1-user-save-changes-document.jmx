@@ -33,7 +33,7 @@
           </elementProp>
           <elementProp name="document-url" elementType="Argument">
             <stringProp name="Argument.name">document-url</stringProp>
-            <stringProp name="Argument.value">https://nct.onlyoffice.com/sh/XyY</stringProp>
+            <stringProp name="Argument.value">http://d2ettrnqo7v976.cloudfront.net/stress-test/jmeter-test.docx</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">url to docx document</stringProp>
           </elementProp>
@@ -197,11 +197,11 @@
           <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
           <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
           <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+          <stringProp name="HTTPSampler.response_timeout">10000</stringProp>
         </HTTPSamplerProxy>
         <hashTree/>
-        <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="wait conversions" enabled="true">
+        <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="wait conversions" enabled="false">
           <stringProp name="groupSize">${number-of-threads}</stringProp>
           <longProp name="timeoutInMs">600000</longProp>
         </SyncTimer>
