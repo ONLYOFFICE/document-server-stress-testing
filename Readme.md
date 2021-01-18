@@ -5,7 +5,7 @@
 
 ### Installing necessary components
 
-Instruction for command-line installation and usage on Debian-based systems [aviable here](https://github.com/ONLYOFFICE/document-server-stress-testing/wiki/How-to-run-jmeter-from-terminal-on-ubuntu)
+Instruction for command-line installation and usage on Debian-based systems [available here](https://github.com/ONLYOFFICE/document-server-stress-testing/wiki/How-to-run-jmeter-from-terminal-on-ubuntu)
 
 1. [JMeter](https://jmeter.apache.org/download_jmeter.cgi).
 
