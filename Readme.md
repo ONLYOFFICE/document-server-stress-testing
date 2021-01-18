@@ -5,7 +5,9 @@
 
 ### Installing necessary components
 
-1. [JMeter](https://jmeter.apache.org/download_jmeter.cgi)
+Instruction for command-line installation and usage on Debian-based systems [available here](https://github.com/ONLYOFFICE/document-server-stress-testing/wiki/How-to-run-jmeter-from-terminal-on-ubuntu)
+
+1. [JMeter](https://jmeter.apache.org/download_jmeter.cgi).
 
 2. Install "WebSocket Samplers by Peter Doornbosch" JMeter plugin via [JMeter Plugins Manager](https://jmeter-plugins.org/install/Install/) or [manulally](https://github.com/ptrd/jmeter-websocket-samplers#usage) as .jar file
 
