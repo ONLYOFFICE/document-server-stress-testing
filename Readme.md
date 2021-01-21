@@ -13,6 +13,8 @@ Instruction for command-line installation and usage on Debian-based systems [ava
 
 3. set property `websocket.thread.stop.policy=wsclose` according to [instructions](https://github.com/ptrd/jmeter-websocket-samplers#connections)
 
+4. Set [services.CoAuthoring.token.enable.browser](https://api.onlyoffice.com/editors/signature/) configuration file property to false .
+
 ### User Defined Variables overview
 
 #### 1-user-save -changes-document.jmx
@@ -24,6 +26,16 @@ Instruction for command-line installation and usage on Debian-based systems [ava
 - `changes`: only fit a specific `document-url` and [ONLYOFFICE Document Server][1] version
 - `save-changes-throughput-per-minute`: amount of saveChanges per minute(jmeter constant throughput timer)
 - `read-timeout`: Response (read) timeout (ms) for operations: "open and send auth", "read license", "read auth", "read getLock", "read saveLock", "read unSaveLock"
+
+### Make new `changes` parameter
+
+Follow these steps:
+1. Open document with `document-url` in Chrome in [ONLYOFFICE Document Server][1] editor
+2. Open Chrome DevTools (Ctrl + Shift + I) when opening a file
+3. Make some edits in editor in strict Co-editing Mode and press Save
+4. Go to the Network tab
+5. Find the websocket Messages tab
+6. Cut out `changes` param from message that starts with `["{\"type\":\"saveChanges\"`. Use it as the `changes` parameter
 
   [1]: https://github.com/ONLYOFFICE/DocumentServer
 

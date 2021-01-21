@@ -21,7 +21,7 @@
           </elementProp>
           <elementProp name="server-name-or-ip" elementType="Argument">
             <stringProp name="Argument.name">server-name-or-ip</stringProp>
-            <stringProp name="Argument.value">isa2.teamlab.info</stringProp>
+            <stringProp name="Argument.value">localhost</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">websocket host</stringProp>
           </elementProp>
