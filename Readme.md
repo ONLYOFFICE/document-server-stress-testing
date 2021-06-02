@@ -23,9 +23,16 @@ Instruction for command-line installation and usage on Debian-based systems [ava
 - `server-name-or-ip`: websocket host
 - `port`: websocket port, whole url look like `ws://${server-name-or-ip}:${port}/doc/${doc-id}/c/806/e204ietx/websocket`
 - `document-url`: url to docx document
-- `changes`: only fit a specific `document-url` and [ONLYOFFICE Document Server][1] version
-- `save-changes-throughput-per-minute`: amount of saveChanges per minute(jmeter constant throughput timer)
-- `read-timeout`: Response (read) timeout (ms) for operations: "open and send auth", "read license", "read auth", "read getLock", "read saveLock", "read unSaveLock"
+- `callback-url`: url to send assembled file(if empty, forgotten will be stored). since [ONLYOFFICE Document Server][1] 6.5 you can use dummyCallback handler
+- `changes`: only fit a specific `document-url` and [ONLYOFFICE Document Server][1] version 6.3
+- `save-changes-throughput-per-minute`: amount of saveChanges per minute(see jmeter constant throughput timer)
+- `close-session-percent-per-minute`: percentage of threads closing the connection at the end of the minute. calculated randomly for each thread (`if (Math.random() * 100 > ${close-session-percent-per-minute}) {continue;} else {close;}`)
+- `connect-timeout`: Connect timeout (ms) for all requests
+- `download-timeout`: Response (read) timeout (ms) for operations: "read documentOpen"
+- `auth-timeout`: Response (read) timeout (ms) for operations: "open and send auth"
+- `read-timeout`: Response (read) timeout (ms) for operations: "read license", "read auth", "read getLock", "read saveLock", "read unSaveLock"
+- `conversion-timeout`: Response (read) timeout (ms) for operations: "read documentOpen"
+- `close-timeout`: Response (read) timeout (ms) for operations: "close"
 
 ### Make new `changes` parameter
 
