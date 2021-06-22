@@ -26,7 +26,7 @@ Instruction for command-line installation and usage on Debian-based systems [ava
 - `callback-url`: url to send assembled file(if empty, forgotten will be stored). since [ONLYOFFICE Document Server][1] 6.5 you can use dummyCallback handler
 - `changes`: only fit a specific `document-url` and [ONLYOFFICE Document Server][1] version 6.3
 - `save-changes-throughput-per-minute`: amount of saveChanges per minute(see jmeter constant throughput timer)
-- `close-session-percent-per-minute`: percentage of threads closing the connection at the end of the minute. calculated randomly for each thread (`if (Math.random() * 100 > ${close-session-percent-per-minute}) {continue;} else {close;}`)
+- `close-session-percent-per-minute`: percentage of threads closing the connection at the end of the minute. calculated by __threadNum
 - `connect-timeout`: Connect timeout (ms) for all requests
 - `download-timeout`: Response (read) timeout (ms) for operations: "read documentOpen"
 - `auth-timeout`: Response (read) timeout (ms) for operations: "open and send auth"
