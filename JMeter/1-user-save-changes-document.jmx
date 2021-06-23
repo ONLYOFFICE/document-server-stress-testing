@@ -257,25 +257,27 @@
           <stringProp name="timeoutInMs">${conversion-timeout}</stringProp>
         </SyncTimer>
         <hashTree/>
-        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler - while condition" enabled="true">
-          <stringProp name="BeanShellSampler.query">${__javaScript(true, iteration-condition)};
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - while condition" enabled="true">
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="script">${__javaScript(true, iteration-condition)};
 ${__javaScript(${__property(iteration-number)}, iteration-number-prev)};</stringProp>
-          <stringProp name="BeanShellSampler.filename"></stringProp>
-          <stringProp name="BeanShellSampler.parameters"></stringProp>
-          <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
-        </BeanShellSampler>
+          <stringProp name="scriptLanguage">groovy</stringProp>
+        </JSR223Sampler>
         <hashTree/>
         <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
           <stringProp name="WhileController.condition">${__javaScript(${iteration-condition} || (${__threadNum}-1) * 100 &lt; ${__property(iteration-sliding-close)} * ${number-of-threads} || (${__property(iteration-sliding-close)} + ${close-session-percent-per-minute}) * ${number-of-threads} &lt;= (${__threadNum}-1) * 100)}</stringProp>
         </WhileController>
         <hashTree>
-          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler - while condition" enabled="true">
-            <stringProp name="BeanShellSampler.query">${__javaScript(${__property(iteration-number)} == ${iteration-number-prev}, iteration-condition)};
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - while condition" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">${__javaScript(${__property(iteration-number)} == ${iteration-number-prev}, iteration-condition)};
 ${__javaScript(${__property(iteration-number)}, iteration-number-prev)};</stringProp>
-            <stringProp name="BeanShellSampler.filename"></stringProp>
-            <stringProp name="BeanShellSampler.parameters"></stringProp>
-            <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
-          </BeanShellSampler>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223Sampler>
           <hashTree/>
           <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
             <boolProp name="displayJMeterProperties">false</boolProp>
@@ -640,13 +642,14 @@ ${__javaScript(${__property(iteration-number)}, iteration-number-prev)};</string
             <boolProp name="CounterConfig.per_user">false</boolProp>
           </CounterConfig>
           <hashTree/>
-          <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="BeanShell Sampler - while condition" enabled="true">
-            <stringProp name="BeanShellSampler.query">${__setProperty(iteration-sliding-close, ${iteration-sliding-close})};
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler - while condition" enabled="true">
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="script">${__setProperty(iteration-sliding-close, ${iteration-sliding-close})};
 ${__setProperty(iteration-number, ${iteration-number})};</stringProp>
-            <stringProp name="BeanShellSampler.filename"></stringProp>
-            <stringProp name="BeanShellSampler.parameters"></stringProp>
-            <boolProp name="BeanShellSampler.resetInterpreter">false</boolProp>
-          </BeanShellSampler>
+            <stringProp name="scriptLanguage">groovy</stringProp>
+          </JSR223Sampler>
           <hashTree/>
           <DebugSampler guiclass="TestBeanGUI" testclass="DebugSampler" testname="Debug Sampler" enabled="false">
             <boolProp name="displayJMeterProperties">false</boolProp>
@@ -661,7 +664,7 @@ ${__setProperty(iteration-number, ${iteration-number})};</stringProp>
           </TestAction>
           <hashTree/>
         </hashTree>
-        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+        <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
             <name>saveConfig</name>
