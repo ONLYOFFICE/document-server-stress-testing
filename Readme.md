@@ -12,6 +12,8 @@ This repository describes how to run stress testing of [ONLYOFFICE Document Serv
 
 4. Set [services.CoAuthoring.token.enable.browser](https://api.onlyoffice.com/editors/signature/) configuration file property to false.
 
+5. Set `services.CoAuthoring.socketio.connection.pingInterval` configuration file property to 1000000000.
+
 ### Overview of User Defined Variables
 
 #### 1-user-save-changes-document.jmx
@@ -36,7 +38,7 @@ This repository describes how to run stress testing of [ONLYOFFICE Document Serv
 Follow these steps:
 1. Open document with `document-url` in Chrome with ONLYOFFICE editor ([Document Server][1]).
 2. Open Chrome DevTools (Ctrl + Shift + I) when opening a file.
-3. Make some changes in the editor in the Strict co-editing mode and press Save.
+3. Type `Sample data` in the editor in the Strict co-editing mode and press Save.
 4. Go to the Network tab.
 5. Find the WebSocket Messages tab.
 6. Cut out `changes` param from the message that starts with `["{\"type\":\"saveChanges\"`. Use it as the `changes` parameter.
