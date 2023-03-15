@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.4.1">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.5">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Test Plan" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -37,18 +37,6 @@
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">url to docx document</stringProp>
           </elementProp>
-          <elementProp name="callback-url" elementType="Argument">
-            <stringProp name="Argument.name">callback-url</stringProp>
-            <stringProp name="Argument.value"></stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">url to send assembled file. since Document Server 6.5 you can use dummyCallback handler or it can be empty</stringProp>
-          </elementProp>
-          <elementProp name="changes" elementType="Argument">
-            <stringProp name="Argument.name">changes</stringProp>
-            <stringProp name="Argument.value">[\&quot;96;AgAAADEA//8BAKaXwLkj/wEALQEAAAYAAAAQAAAAEAAAABMAAAAwAAAAMAAAAC4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAAAAAABAAAAUwAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAEAAAABAAAAYQAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAIAAAABAAAAbQAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAMAAAABAAAAcAAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAQAAAABAAAAbAAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAUAAAABAAAAZQAAAAADAAAA\&quot;,\&quot;96;AgAAADEA//8BAKaXwLkj/wEApwAAAAEAAAARAAAAEAAAABMAAAAwAAAAMAAAAC4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\&quot;,\&quot;38;CgAAADYAXwA2ADQAMgABABwAAQAAAAYAAAACAAAAIAAAAAMAAAA=\&quot;,\&quot;96;AgAAADEA//8BAKaXwLkj/wEALQEAAAQAAAASAAAAEAAAABMAAAAwAAAAMAAAAC4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAcAAAABAAAAZAAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAgAAAABAAAAYQAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAkAAAABAAAAdAAAAAADAAAA\&quot;,\&quot;39;CgAAADYAXwA2ADQAMgABABwAAQAAAAoAAAABAAAAYQAAAAADAAAA\&quot;,\&quot;96;AgAAADEA//8BAKaXwLkj/wEApwAAAAEAAAATAAAAEAAAABMAAAAwAAAAMAAAAC4AAABAAEAAVgBlAHIAcwBpAG8AbgAuAEAAQABCAHUAaQBsAGQALgBAAEAAUgBlAHYA\&quot;,\&quot;38;CgAAADYAXwA2ADQAMgABABwAAQAAAAsAAAACAAAAIAAAAAMAAAA=\&quot;]</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">only fit a specific `document-url` and Document Server version 6.3(Entered 'Example Data ' in Document Editor)</stringProp>
-          </elementProp>
           <elementProp name="save-changes-throughput-per-minute" elementType="Argument">
             <stringProp name="Argument.name">save-changes-throughput-per-minute</stringProp>
             <stringProp name="Argument.value">120</stringProp>
@@ -75,7 +63,7 @@
           </elementProp>
           <elementProp name="auth-timeout" elementType="Argument">
             <stringProp name="Argument.name">auth-timeout</stringProp>
-            <stringProp name="Argument.value">1000</stringProp>
+            <stringProp name="Argument.value">60000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Response (read) timeout (ms) for operations: &quot;open and send auth&quot;</stringProp>
           </elementProp>
@@ -100,6 +88,30 @@
         </collectionProp>
       </Arguments>
       <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+        <stringProp name="delimiter"></stringProp>
+        <stringProp name="fileEncoding"></stringProp>
+        <stringProp name="filename">./dataset/docid.csv</stringProp>
+        <boolProp name="ignoreFirstLine">false</boolProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">true</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="variableNames">doc-id</stringProp>
+      </CSVDataSet>
+      <hashTree/>
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+        <stringProp name="delimiter">\t</stringProp>
+        <stringProp name="fileEncoding"></stringProp>
+        <stringProp name="filename">./dataset/changes.csv</stringProp>
+        <boolProp name="ignoreFirstLine">false</boolProp>
+        <boolProp name="quotedData">false</boolProp>
+        <boolProp name="recycle">true</boolProp>
+        <stringProp name="shareMode">shareMode.all</stringProp>
+        <boolProp name="stopThread">false</boolProp>
+        <stringProp name="variableNames">changes</stringProp>
+      </CSVDataSet>
+      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -117,12 +129,17 @@
         <boolProp name="ThreadGroup.delayedStart">true</boolProp>
       </ThreadGroup>
       <hashTree>
+        <eu.luminis.jmeter.wssampler.TextFrameFilter guiclass="eu.luminis.jmeter.wssampler.TextFrameFilterGui" testclass="eu.luminis.jmeter.wssampler.TextFrameFilter" testname="WebSocket Text Frame Filter" enabled="true">
+          <stringProp name="comparisonType">NotContainsRegex</stringProp>
+          <stringProp name="matchValue">(0\{&quot;sid&quot;)|(40\{&quot;sid&quot;\:)|(&quot;type&quot;\:&quot;license&quot;)|(&quot;type&quot;\:&quot;auth&quot;)|(&quot;type&quot;\:&quot;waitAuth&quot;)|(&quot;type&quot;\:&quot;documentOpen&quot;)|(&quot;type&quot;\:&quot;saveLock&quot;)|(&quot;type&quot;\:&quot;unSaveLock&quot;)</stringProp>
+        </eu.luminis.jmeter.wssampler.TextFrameFilter>
+        <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Transaction Controller" enabled="true">
           <boolProp name="TransactionController.includeTimers">false</boolProp>
           <boolProp name="TransactionController.parent">false</boolProp>
         </TransactionController>
         <hashTree>
-          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random docId" enabled="true">
+          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random docId" enabled="false">
             <stringProp name="maximumValue">9999999999</stringProp>
             <stringProp name="minimumValue">1000000000</stringProp>
             <stringProp name="outputFormat">0000000000</stringProp>
@@ -131,7 +148,7 @@
             <stringProp name="variableName">doc-id1</stringProp>
           </RandomVariableConfig>
           <hashTree/>
-          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random docId" enabled="true">
+          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random docId" enabled="false">
             <stringProp name="maximumValue">9999999999</stringProp>
             <stringProp name="minimumValue">1000000000</stringProp>
             <stringProp name="outputFormat">0000000000</stringProp>
@@ -149,7 +166,7 @@
             <boolProp name="createNewConnection">true</boolProp>
             <stringProp name="server">${server-name-or-ip}</stringProp>
             <stringProp name="port">${port}</stringProp>
-            <stringProp name="path">/doc/${doc-id1}.${doc-id2}/c/?EIO=4&amp;transport=websocket</stringProp>
+            <stringProp name="path">/doc/${doc-id}/c/?EIO=4&amp;transport=websocket</stringProp>
             <boolProp name="binaryPayload">false</boolProp>
             <stringProp name="requestData">40{&quot;token&quot;:&quot;&quot;}</stringProp>
             <boolProp name="TLS">false</boolProp>
@@ -212,7 +229,7 @@
             <stringProp name="path"></stringProp>
             <stringProp name="connectTimeout">20000</stringProp>
             <boolProp name="binaryPayload">false</boolProp>
-            <stringProp name="requestData">42[&quot;message&quot;,{&quot;type&quot;:&quot;auth&quot;,&quot;docid&quot;:&quot;${doc-id1}.${doc-id2}&quot;,&quot;documentCallbackUrl&quot;:&quot;${callback-url}&quot;,&quot;token&quot;:&quot;fghhfgsjdgfjs&quot;,&quot;user&quot;:{&quot;id&quot;:&quot;uid-1&quot;,&quot;username&quot;:&quot;John Smith&quot;,&quot;firstname&quot;:null,&quot;lastname&quot;:null,&quot;indexUser&quot;:-1},&quot;editorType&quot;:0,&quot;lastOtherSaveTime&quot;:-1,&quot;block&quot;:[],&quot;sessionId&quot;:null,&quot;sessionTimeConnect&quot;:null,&quot;sessionTimeIdle&quot;:0,&quot;documentFormatSave&quot;:65,&quot;view&quot;:false,&quot;isCloseCoAuthoring&quot;:false,&quot;openCmd&quot;:{&quot;c&quot;:&quot;open&quot;,&quot;id&quot;:&quot;${doc-id1}.${doc-id2}&quot;,&quot;userid&quot;:&quot;uid-1&quot;,&quot;format&quot;:&quot;docx&quot;,&quot;url&quot;:&quot;${document-url}&quot;,&quot;title&quot;:&quot;new (47).docx&quot;,&quot;lcid&quot;:9,&quot;nobase64&quot;:true,&quot;convertToOrigin&quot;:&quot;.pdf.xps.oxps.djvu&quot;},&quot;lang&quot;:&quot;en&quot;,&quot;mode&quot;:&quot;edit&quot;,&quot;permissions&quot;:{&quot;chat&quot;:true,&quot;comment&quot;:true,&quot;copy&quot;:true,&quot;download&quot;:true,&quot;edit&quot;:true,&quot;fillForms&quot;:true,&quot;modifyContentControl&quot;:true,&quot;modifyFilter&quot;:true,&quot;print&quot;:true,&quot;review&quot;:true,&quot;reviewGroups&quot;:null,&quot;commentGroups&quot;:{},&quot;userInfoGroups&quot;:null},&quot;IsAnonymousUser&quot;:false,&quot;timezoneOffset&quot;:-180,&quot;coEditingMode&quot;:&quot;fast&quot;,&quot;jwtOpen&quot;:&quot;&quot;,&quot;supportAuthChangesAck&quot;:true}]</stringProp>
+            <stringProp name="requestData">42[&quot;message&quot;,{&quot;type&quot;:&quot;auth&quot;,&quot;docid&quot;:&quot;${doc-id}&quot;,&quot;documentCallbackUrl&quot;:&quot;http://${server-name-or-ip}:${port}/dummyCallback&quot;,&quot;token&quot;:&quot;fghhfgsjdgfjs&quot;,&quot;user&quot;:{&quot;id&quot;:&quot;uid-1&quot;,&quot;username&quot;:&quot;John Smith&quot;,&quot;firstname&quot;:null,&quot;lastname&quot;:null,&quot;indexUser&quot;:-1},&quot;editorType&quot;:0,&quot;lastOtherSaveTime&quot;:-1,&quot;block&quot;:[],&quot;sessionId&quot;:null,&quot;sessionTimeConnect&quot;:null,&quot;sessionTimeIdle&quot;:0,&quot;documentFormatSave&quot;:65,&quot;view&quot;:false,&quot;isCloseCoAuthoring&quot;:false,&quot;openCmd&quot;:{&quot;c&quot;:&quot;open&quot;,&quot;id&quot;:&quot;${doc-id}&quot;,&quot;userid&quot;:&quot;uid-1&quot;,&quot;format&quot;:&quot;docx&quot;,&quot;url&quot;:&quot;${document-url}&quot;,&quot;title&quot;:&quot;new (47).docx&quot;,&quot;lcid&quot;:9,&quot;nobase64&quot;:true,&quot;convertToOrigin&quot;:&quot;.pdf.xps.oxps.djvu&quot;},&quot;lang&quot;:&quot;en&quot;,&quot;mode&quot;:&quot;edit&quot;,&quot;permissions&quot;:{&quot;chat&quot;:true,&quot;comment&quot;:true,&quot;copy&quot;:true,&quot;download&quot;:true,&quot;edit&quot;:true,&quot;fillForms&quot;:true,&quot;modifyContentControl&quot;:true,&quot;modifyFilter&quot;:true,&quot;print&quot;:true,&quot;review&quot;:true,&quot;reviewGroups&quot;:null,&quot;commentGroups&quot;:{},&quot;userInfoGroups&quot;:null},&quot;IsAnonymousUser&quot;:false,&quot;timezoneOffset&quot;:-180,&quot;coEditingMode&quot;:&quot;fast&quot;,&quot;jwtOpen&quot;:&quot;&quot;,&quot;supportAuthChangesAck&quot;:true}]</stringProp>
             <boolProp name="createNewConnection">false</boolProp>
             <boolProp name="loadDataFromFile">false</boolProp>
             <stringProp name="dataFile"></stringProp>
@@ -233,66 +250,138 @@
             <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
               <collectionProp name="Asserion.test_strings">
                 <stringProp name="-255618740">&quot;type&quot;:&quot;auth&quot;</stringProp>
+                <stringProp name="1200453591">&quot;type&quot;:&quot;waitAuth&quot;</stringProp>
               </collectionProp>
               <stringProp name="Assertion.custom_message"></stringProp>
               <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
               <boolProp name="Assertion.assume_success">false</boolProp>
-              <intProp name="Assertion.test_type">2</intProp>
-            </ResponseAssertion>
-            <hashTree/>
-          </hashTree>
-          <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="read documentOpen" enabled="true">
-            <boolProp name="TLS">false</boolProp>
-            <stringProp name="server"></stringProp>
-            <stringProp name="port">80</stringProp>
-            <stringProp name="path"></stringProp>
-            <stringProp name="connectTimeout">${connect-timeout}</stringProp>
-            <stringProp name="dataType">Text</stringProp>
-            <boolProp name="createNewConnection">false</boolProp>
-            <stringProp name="readTimeout">${conversion-timeout}</stringProp>
-            <boolProp name="optional">false</boolProp>
-          </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
-          <hashTree>
-            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
-              <collectionProp name="Asserion.test_strings">
-                <stringProp name="1479418511">&quot;type&quot;:&quot;documentOpen&quot;</stringProp>
-              </collectionProp>
-              <stringProp name="Assertion.custom_message"></stringProp>
-              <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
-              <boolProp name="Assertion.assume_success">false</boolProp>
-              <intProp name="Assertion.test_type">2</intProp>
+              <intProp name="Assertion.test_type">34</intProp>
             </ResponseAssertion>
             <hashTree/>
             <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
-              <stringProp name="RegexExtractor.refname">editor-bin-url</stringProp>
-              <stringProp name="RegexExtractor.regex">&quot;Editor.bin&quot;:&quot;([^&quot;]+)&quot;</stringProp>
+              <stringProp name="RegexExtractor.refname">auth-type</stringProp>
+              <stringProp name="RegexExtractor.regex">&quot;type&quot;:&quot;(.*?)&quot;</stringProp>
               <stringProp name="RegexExtractor.template">$1$</stringProp>
               <stringProp name="RegexExtractor.default"></stringProp>
               <stringProp name="RegexExtractor.match_number"></stringProp>
-              <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
             </RegexExtractor>
             <hashTree/>
           </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="download Editor.bin" enabled="true">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
-            </elementProp>
-            <stringProp name="HTTPSampler.domain"></stringProp>
-            <stringProp name="HTTPSampler.port"></stringProp>
-            <stringProp name="HTTPSampler.protocol"></stringProp>
-            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">${editor-bin-url}</stringProp>
-            <stringProp name="HTTPSampler.method">GET</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-            <stringProp name="HTTPSampler.connect_timeout">${connect-timeout}</stringProp>
-            <stringProp name="HTTPSampler.response_timeout">${download-timeout}</stringProp>
-          </HTTPSamplerProxy>
-          <hashTree/>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+            <stringProp name="IfController.condition">${__javaScript(&quot;${auth-type}&quot; != &quot;waitAuth&quot;,)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="read documentOpen" enabled="true">
+              <boolProp name="TLS">false</boolProp>
+              <stringProp name="server"></stringProp>
+              <stringProp name="port">80</stringProp>
+              <stringProp name="path"></stringProp>
+              <stringProp name="connectTimeout">${connect-timeout}</stringProp>
+              <stringProp name="dataType">Text</stringProp>
+              <boolProp name="createNewConnection">false</boolProp>
+              <stringProp name="readTimeout">${conversion-timeout}</stringProp>
+              <boolProp name="optional">false</boolProp>
+            </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
+            <hashTree>
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                <collectionProp name="Asserion.test_strings">
+                  <stringProp name="1479418511">&quot;type&quot;:&quot;documentOpen&quot;</stringProp>
+                </collectionProp>
+                <stringProp name="Assertion.custom_message"></stringProp>
+                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                <boolProp name="Assertion.assume_success">false</boolProp>
+                <intProp name="Assertion.test_type">2</intProp>
+              </ResponseAssertion>
+              <hashTree/>
+              <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
+                <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                <stringProp name="RegexExtractor.refname">editor-bin-url</stringProp>
+                <stringProp name="RegexExtractor.regex">&quot;Editor.bin&quot;:&quot;([^&quot;]+)&quot;</stringProp>
+                <stringProp name="RegexExtractor.template">$1$</stringProp>
+                <stringProp name="RegexExtractor.default"></stringProp>
+                <stringProp name="RegexExtractor.match_number"></stringProp>
+                <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+              </RegexExtractor>
+              <hashTree/>
+            </hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="download Editor.bin" enabled="true">
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                <collectionProp name="Arguments.arguments"/>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain"></stringProp>
+              <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path">${editor-bin-url}</stringProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout">${connect-timeout}</stringProp>
+              <stringProp name="HTTPSampler.response_timeout">${download-timeout}</stringProp>
+            </HTTPSamplerProxy>
+            <hashTree/>
+          </hashTree>
+          <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Controller" enabled="true">
+            <stringProp name="IfController.condition">${__javaScript(&quot;${auth-type}&quot; == &quot;waitAuth&quot;,)}</stringProp>
+            <boolProp name="IfController.evaluateAll">false</boolProp>
+            <boolProp name="IfController.useExpression">true</boolProp>
+          </IfController>
+          <hashTree>
+            <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="read auth or documentOpen" enabled="true">
+              <boolProp name="TLS">false</boolProp>
+              <stringProp name="server"></stringProp>
+              <stringProp name="port">80</stringProp>
+              <stringProp name="path"></stringProp>
+              <stringProp name="connectTimeout">${connect-timeout}</stringProp>
+              <stringProp name="dataType">Text</stringProp>
+              <boolProp name="createNewConnection">false</boolProp>
+              <stringProp name="readTimeout">${conversion-timeout}</stringProp>
+              <boolProp name="optional">false</boolProp>
+            </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
+            <hashTree>
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                <collectionProp name="Asserion.test_strings">
+                  <stringProp name="1479418511">&quot;type&quot;:&quot;documentOpen&quot;</stringProp>
+                  <stringProp name="-255618740">&quot;type&quot;:&quot;auth&quot;</stringProp>
+                </collectionProp>
+                <stringProp name="Assertion.custom_message"></stringProp>
+                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                <boolProp name="Assertion.assume_success">false</boolProp>
+                <intProp name="Assertion.test_type">34</intProp>
+              </ResponseAssertion>
+              <hashTree/>
+            </hashTree>
+            <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="read auth or documentOpen" enabled="true">
+              <boolProp name="TLS">false</boolProp>
+              <stringProp name="server"></stringProp>
+              <stringProp name="port">80</stringProp>
+              <stringProp name="path"></stringProp>
+              <stringProp name="connectTimeout">${connect-timeout}</stringProp>
+              <stringProp name="dataType">Text</stringProp>
+              <boolProp name="createNewConnection">false</boolProp>
+              <stringProp name="readTimeout">${conversion-timeout}</stringProp>
+              <boolProp name="optional">false</boolProp>
+            </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
+            <hashTree>
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                <collectionProp name="Asserion.test_strings">
+                  <stringProp name="1479418511">&quot;type&quot;:&quot;documentOpen&quot;</stringProp>
+                  <stringProp name="-255618740">&quot;type&quot;:&quot;auth&quot;</stringProp>
+                </collectionProp>
+                <stringProp name="Assertion.custom_message"></stringProp>
+                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                <boolProp name="Assertion.assume_success">false</boolProp>
+                <intProp name="Assertion.test_type">34</intProp>
+              </ResponseAssertion>
+              <hashTree/>
+            </hashTree>
+          </hashTree>
           <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="wait conversions" enabled="false">
             <stringProp name="groupSize">${number-of-threads}</stringProp>
             <stringProp name="timeoutInMs">${conversion-timeout}</stringProp>
@@ -324,7 +413,12 @@
             <hashTree/>
             <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Simple Controller" enabled="true"/>
             <hashTree>
-              <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="send getLock" enabled="true">
+              <eu.luminis.jmeter.wssampler.TextFrameFilter guiclass="eu.luminis.jmeter.wssampler.TextFrameFilterGui" testclass="eu.luminis.jmeter.wssampler.TextFrameFilter" testname="WebSocket Text Frame Filter" enabled="true">
+                <stringProp name="comparisonType">NotContainsRegex</stringProp>
+                <stringProp name="matchValue">(&quot;type&quot;\:&quot;saveLock&quot;)|(&quot;type&quot;\:&quot;unSaveLock&quot;)</stringProp>
+              </eu.luminis.jmeter.wssampler.TextFrameFilter>
+              <hashTree/>
+              <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="send getLock" enabled="false">
                 <boolProp name="TLS">false</boolProp>
                 <stringProp name="server"></stringProp>
                 <stringProp name="port">80</stringProp>
@@ -350,7 +444,7 @@
                 <stringProp name="dataFile"></stringProp>
               </eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler>
               <hashTree/>
-              <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="read getLock" enabled="true">
+              <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="read getLock" enabled="false">
                 <boolProp name="TLS">false</boolProp>
                 <stringProp name="server"></stringProp>
                 <stringProp name="port">80</stringProp>
@@ -364,7 +458,7 @@
               <hashTree>
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
-                    <stringProp name="367436687">&quot;type&quot;:&quot;getLock&quot;</stringProp>
+                    <stringProp name="952626296">42[&quot;message&quot;,{&quot;type&quot;:&quot;getLock&quot;,&quot;locks&quot;:{&quot;${user-id}&quot;</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.custom_message"></stringProp>
                   <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
@@ -400,14 +494,79 @@
               <hashTree>
                 <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
                   <collectionProp name="Asserion.test_strings">
-                    <stringProp name="-634535472">42[&quot;message&quot;,{&quot;type&quot;:&quot;saveLock&quot;,&quot;saveLock&quot;:false}]</stringProp>
+                    <stringProp name="-1926490708">&quot;type&quot;:&quot;saveLock&quot;</stringProp>
                   </collectionProp>
                   <stringProp name="Assertion.custom_message"></stringProp>
                   <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
                   <boolProp name="Assertion.assume_success">false</boolProp>
-                  <intProp name="Assertion.test_type">8</intProp>
+                  <intProp name="Assertion.test_type">2</intProp>
                 </ResponseAssertion>
                 <hashTree/>
+                <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
+                  <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                  <stringProp name="RegexExtractor.refname">save-lock-res</stringProp>
+                  <stringProp name="RegexExtractor.regex">&quot;saveLock&quot;\:(.*?)\}</stringProp>
+                  <stringProp name="RegexExtractor.template">$1$</stringProp>
+                  <stringProp name="RegexExtractor.default"></stringProp>
+                  <stringProp name="RegexExtractor.match_number"></stringProp>
+                  <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+                </RegexExtractor>
+                <hashTree/>
+              </hashTree>
+              <WhileController guiclass="WhileControllerGui" testclass="WhileController" testname="While Controller" enabled="true">
+                <stringProp name="WhileController.condition">${__javaScript(&quot;${save-lock-res}&quot; == &quot;true&quot;,)}</stringProp>
+              </WhileController>
+              <hashTree>
+                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+                  <stringProp name="ConstantTimer.delay">100</stringProp>
+                </ConstantTimer>
+                <hashTree/>
+                <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="send isSaveLock" enabled="true">
+                  <boolProp name="TLS">false</boolProp>
+                  <stringProp name="server"></stringProp>
+                  <stringProp name="port">80</stringProp>
+                  <stringProp name="path"></stringProp>
+                  <stringProp name="connectTimeout">${connect-timeout}</stringProp>
+                  <boolProp name="binaryPayload">false</boolProp>
+                  <stringProp name="requestData">42[&quot;message&quot;,{&quot;type&quot;:&quot;isSaveLock&quot;}]</stringProp>
+                  <boolProp name="createNewConnection">false</boolProp>
+                  <boolProp name="loadDataFromFile">false</boolProp>
+                  <stringProp name="dataFile"></stringProp>
+                </eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler>
+                <hashTree/>
+                <eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler" testname="read saveLock" enabled="true">
+                  <boolProp name="TLS">false</boolProp>
+                  <stringProp name="server"></stringProp>
+                  <stringProp name="port">80</stringProp>
+                  <stringProp name="path"></stringProp>
+                  <stringProp name="connectTimeout">${connect-timeout}</stringProp>
+                  <stringProp name="dataType">Text</stringProp>
+                  <boolProp name="createNewConnection">false</boolProp>
+                  <stringProp name="readTimeout">${read-timeout}</stringProp>
+                  <boolProp name="optional">false</boolProp>
+                </eu.luminis.jmeter.wssampler.SingleReadWebSocketSampler>
+                <hashTree>
+                  <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                    <collectionProp name="Asserion.test_strings">
+                      <stringProp name="-1926490708">&quot;type&quot;:&quot;saveLock&quot;</stringProp>
+                    </collectionProp>
+                    <stringProp name="Assertion.custom_message"></stringProp>
+                    <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                    <boolProp name="Assertion.assume_success">false</boolProp>
+                    <intProp name="Assertion.test_type">2</intProp>
+                  </ResponseAssertion>
+                  <hashTree/>
+                  <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
+                    <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+                    <stringProp name="RegexExtractor.refname">save-lock-res</stringProp>
+                    <stringProp name="RegexExtractor.regex">&quot;saveLock&quot;\:(.*?)\}</stringProp>
+                    <stringProp name="RegexExtractor.template">$1$</stringProp>
+                    <stringProp name="RegexExtractor.default"></stringProp>
+                    <stringProp name="RegexExtractor.match_number"></stringProp>
+                    <boolProp name="RegexExtractor.default_empty_value">true</boolProp>
+                  </RegexExtractor>
+                  <hashTree/>
+                </hashTree>
               </hashTree>
               <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="send saveChanges" enabled="true">
                 <boolProp name="TLS">false</boolProp>
@@ -445,6 +604,19 @@
                 </ResponseAssertion>
                 <hashTree/>
               </hashTree>
+              <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="send unLockDocument" enabled="true">
+                <boolProp name="TLS">false</boolProp>
+                <stringProp name="server"></stringProp>
+                <stringProp name="port">80</stringProp>
+                <stringProp name="path"></stringProp>
+                <stringProp name="connectTimeout">${connect-timeout}</stringProp>
+                <boolProp name="binaryPayload">false</boolProp>
+                <stringProp name="requestData">42[&quot;message&quot;,{&quot;type&quot;:&quot;unLockDocument&quot;,&quot;isSave&quot;:false,&quot;unlock&quot;:true,&quot;deleteIndex&quot;:-1}]</stringProp>
+                <boolProp name="createNewConnection">false</boolProp>
+                <boolProp name="loadDataFromFile">false</boolProp>
+                <stringProp name="dataFile"></stringProp>
+              </eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler>
+              <hashTree/>
             </hashTree>
             <TestAction guiclass="TestActionGui" testclass="TestAction" testname="Think Time" enabled="true">
               <intProp name="ActionProcessor.action">1</intProp>

@@ -230,7 +230,7 @@
             <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Regular Expression Extractor" enabled="true">
               <stringProp name="RegexExtractor.useHeaders">false</stringProp>
               <stringProp name="RegexExtractor.refname">editor-bin-url</stringProp>
-              <stringProp name="RegexExtractor.regex">{&quot;Editor.bin&quot;:&quot;([^&quot;]+)&quot;}</stringProp>
+              <stringProp name="RegexExtractor.regex">&quot;Editor.bin&quot;:&quot;([^&quot;]+)&quot;</stringProp>
               <stringProp name="RegexExtractor.template">$1$</stringProp>
               <stringProp name="RegexExtractor.default"></stringProp>
               <stringProp name="RegexExtractor.match_number"></stringProp>
