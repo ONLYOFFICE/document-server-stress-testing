@@ -1,3 +1,5 @@
+//https://api.onlyoffice.com/plugin/writingmacros
+
 //Add Text
 (function()
 {
