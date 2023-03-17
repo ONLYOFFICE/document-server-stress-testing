@@ -11,19 +11,25 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables - Config" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="number-of-threads" elementType="Argument">
             <stringProp name="Argument.name">number-of-threads</stringProp>
-            <stringProp name="Argument.value">20</stringProp>
+            <stringProp name="Argument.value">18</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">JMeter thread group property</stringProp>
+          </elementProp>
+          <elementProp name="coeditors-count" elementType="Argument">
+            <stringProp name="Argument.name">coeditors-count</stringProp>
+            <stringProp name="Argument.value">6</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">number of co-authors in one document. Set by the number of lines in changes.csv</stringProp>
           </elementProp>
           <elementProp name="server-name-or-ip" elementType="Argument">
             <stringProp name="Argument.name">server-name-or-ip</stringProp>
             <stringProp name="Argument.value">localhost</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">websocket host</stringProp>
+            <stringProp name="Argument.desc">websocket host (HTTP).Set [services.CoAuthoring.token.enable.browser](https://api.onlyoffice.com/editors/signature/) configuration file property to false.  5. Set `services.CoAuthoring.socketio.connection.pingInterval` configuration file property to 1000000000.</stringProp>
           </elementProp>
           <elementProp name="port" elementType="Argument">
             <stringProp name="Argument.name">port</stringProp>
@@ -35,11 +41,11 @@
             <stringProp name="Argument.name">document-url</stringProp>
             <stringProp name="Argument.value">http://d2ettrnqo7v976.cloudfront.net/stress-test/jmeter-test.docx</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
-            <stringProp name="Argument.desc">url to docx document</stringProp>
+            <stringProp name="Argument.desc">url to document</stringProp>
           </elementProp>
           <elementProp name="save-changes-throughput-per-minute" elementType="Argument">
             <stringProp name="Argument.name">save-changes-throughput-per-minute</stringProp>
-            <stringProp name="Argument.value">120</stringProp>
+            <stringProp name="Argument.value">10</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">amount of saveChanges per minute(see jmeter constant throughput timer)</stringProp>
           </elementProp>
@@ -63,13 +69,13 @@
           </elementProp>
           <elementProp name="auth-timeout" elementType="Argument">
             <stringProp name="Argument.name">auth-timeout</stringProp>
-            <stringProp name="Argument.value">60000</stringProp>
+            <stringProp name="Argument.value">120000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Response (read) timeout (ms) for operations: &quot;open and send auth&quot;</stringProp>
           </elementProp>
           <elementProp name="read-timeout" elementType="Argument">
             <stringProp name="Argument.name">read-timeout</stringProp>
-            <stringProp name="Argument.value">1000</stringProp>
+            <stringProp name="Argument.value">10000</stringProp>
             <stringProp name="Argument.desc">Response (read) timeout (ms) for operations: &quot;read license&quot;, &quot;read auth&quot;, &quot;read getLock&quot;, &quot;read saveLock&quot;, &quot;read unSaveLock&quot;</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -81,26 +87,33 @@
           </elementProp>
           <elementProp name="close-timeout" elementType="Argument">
             <stringProp name="Argument.name">close-timeout</stringProp>
-            <stringProp name="Argument.value">6000</stringProp>
+            <stringProp name="Argument.value">60000</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Response (read) timeout (ms) for operations: &quot;close&quot;</stringProp>
           </elementProp>
         </collectionProp>
+        <stringProp name="TestPlan.comments">Сonfigurable test parameters</stringProp>
       </Arguments>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-        <stringProp name="delimiter"></stringProp>
-        <stringProp name="fileEncoding"></stringProp>
-        <stringProp name="filename">./dataset/docid.csv</stringProp>
-        <boolProp name="ignoreFirstLine">false</boolProp>
-        <boolProp name="quotedData">false</boolProp>
-        <boolProp name="recycle">true</boolProp>
-        <stringProp name="shareMode">shareMode.all</stringProp>
-        <boolProp name="stopThread">false</boolProp>
-        <stringProp name="variableNames">doc-id</stringProp>
-      </CSVDataSet>
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables - Auxiliary" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="callback-url" elementType="Argument">
+            <stringProp name="Argument.name">callback-url</stringProp>
+            <stringProp name="Argument.value">http://${server-name-or-ip}:${port}/dummyCallback</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">return {&quot;error&quot;: 0}</stringProp>
+          </elementProp>
+          <elementProp name="doc-id-prefix" elementType="Argument">
+            <stringProp name="Argument.name">doc-id-prefix</stringProp>
+            <stringProp name="Argument.value">jmeter-${__Random(111111111111,999999999999)}-</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">unique prefix to avoid cache conflicts left over from running previous tests</stringProp>
+          </elementProp>
+        </collectionProp>
+        <stringProp name="TestPlan.comments">Auxiliary test parameters</stringProp>
+      </Arguments>
       <hashTree/>
-      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+      <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config - Changes" enabled="true">
         <stringProp name="delimiter">\t</stringProp>
         <stringProp name="fileEncoding"></stringProp>
         <stringProp name="filename">./dataset/changes.csv</stringProp>
@@ -110,10 +123,11 @@
         <stringProp name="shareMode">shareMode.all</stringProp>
         <boolProp name="stopThread">false</boolProp>
         <stringProp name="variableNames">changes</stringProp>
+        <stringProp name="TestPlan.comments">&quot;changes&quot; as lines in a file</stringProp>
       </CSVDataSet>
       <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
+        <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <intProp name="LoopController.loops">-1</intProp>
@@ -129,9 +143,19 @@
         <boolProp name="ThreadGroup.delayedStart">true</boolProp>
       </ThreadGroup>
       <hashTree>
+        <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="JSR223 Sampler" enabled="true">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">vars.put(&quot;doc-id&quot;, &quot;${doc-id-prefix}&quot; + (Math.ceil(${__threadNum} / ${coeditors-count}) as int))</stringProp>
+          <stringProp name="TestPlan.comments">Construct thread document id</stringProp>
+        </JSR223Sampler>
+        <hashTree/>
         <eu.luminis.jmeter.wssampler.TextFrameFilter guiclass="eu.luminis.jmeter.wssampler.TextFrameFilterGui" testclass="eu.luminis.jmeter.wssampler.TextFrameFilter" testname="WebSocket Text Frame Filter" enabled="true">
           <stringProp name="comparisonType">NotContainsRegex</stringProp>
           <stringProp name="matchValue">(0\{&quot;sid&quot;)|(40\{&quot;sid&quot;\:)|(&quot;type&quot;\:&quot;license&quot;)|(&quot;type&quot;\:&quot;auth&quot;)|(&quot;type&quot;\:&quot;waitAuth&quot;)|(&quot;type&quot;\:&quot;documentOpen&quot;)|(&quot;type&quot;\:&quot;saveLock&quot;)|(&quot;type&quot;\:&quot;unSaveLock&quot;)</stringProp>
+          <stringProp name="TestPlan.comments">filter unused messages in co-editing</stringProp>
         </eu.luminis.jmeter.wssampler.TextFrameFilter>
         <hashTree/>
         <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Transaction Controller" enabled="true">
@@ -139,24 +163,6 @@
           <boolProp name="TransactionController.parent">false</boolProp>
         </TransactionController>
         <hashTree>
-          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random docId" enabled="false">
-            <stringProp name="maximumValue">9999999999</stringProp>
-            <stringProp name="minimumValue">1000000000</stringProp>
-            <stringProp name="outputFormat">0000000000</stringProp>
-            <boolProp name="perThread">false</boolProp>
-            <stringProp name="randomSeed"></stringProp>
-            <stringProp name="variableName">doc-id1</stringProp>
-          </RandomVariableConfig>
-          <hashTree/>
-          <RandomVariableConfig guiclass="TestBeanGUI" testclass="RandomVariableConfig" testname="Random docId" enabled="false">
-            <stringProp name="maximumValue">9999999999</stringProp>
-            <stringProp name="minimumValue">1000000000</stringProp>
-            <stringProp name="outputFormat">0000000000</stringProp>
-            <boolProp name="perThread">false</boolProp>
-            <stringProp name="randomSeed"></stringProp>
-            <stringProp name="variableName">doc-id2</stringProp>
-          </RandomVariableConfig>
-          <hashTree/>
           <eu.luminis.jmeter.wssampler.PingFrameFilter guiclass="eu.luminis.jmeter.wssampler.PingFrameFilterGui" testclass="eu.luminis.jmeter.wssampler.PingFrameFilter" testname="WebSocket Ping/Pong Frame Filter" enabled="true">
             <boolProp name="replyToPing">true</boolProp>
             <stringProp name="filterType">FilterAll</stringProp>
@@ -229,7 +235,7 @@
             <stringProp name="path"></stringProp>
             <stringProp name="connectTimeout">20000</stringProp>
             <boolProp name="binaryPayload">false</boolProp>
-            <stringProp name="requestData">42[&quot;message&quot;,{&quot;type&quot;:&quot;auth&quot;,&quot;docid&quot;:&quot;${doc-id}&quot;,&quot;documentCallbackUrl&quot;:&quot;http://${server-name-or-ip}:${port}/dummyCallback&quot;,&quot;token&quot;:&quot;fghhfgsjdgfjs&quot;,&quot;user&quot;:{&quot;id&quot;:&quot;uid-1&quot;,&quot;username&quot;:&quot;John Smith&quot;,&quot;firstname&quot;:null,&quot;lastname&quot;:null,&quot;indexUser&quot;:-1},&quot;editorType&quot;:0,&quot;lastOtherSaveTime&quot;:-1,&quot;block&quot;:[],&quot;sessionId&quot;:null,&quot;sessionTimeConnect&quot;:null,&quot;sessionTimeIdle&quot;:0,&quot;documentFormatSave&quot;:65,&quot;view&quot;:false,&quot;isCloseCoAuthoring&quot;:false,&quot;openCmd&quot;:{&quot;c&quot;:&quot;open&quot;,&quot;id&quot;:&quot;${doc-id}&quot;,&quot;userid&quot;:&quot;uid-1&quot;,&quot;format&quot;:&quot;docx&quot;,&quot;url&quot;:&quot;${document-url}&quot;,&quot;title&quot;:&quot;new (47).docx&quot;,&quot;lcid&quot;:9,&quot;nobase64&quot;:true,&quot;convertToOrigin&quot;:&quot;.pdf.xps.oxps.djvu&quot;},&quot;lang&quot;:&quot;en&quot;,&quot;mode&quot;:&quot;edit&quot;,&quot;permissions&quot;:{&quot;chat&quot;:true,&quot;comment&quot;:true,&quot;copy&quot;:true,&quot;download&quot;:true,&quot;edit&quot;:true,&quot;fillForms&quot;:true,&quot;modifyContentControl&quot;:true,&quot;modifyFilter&quot;:true,&quot;print&quot;:true,&quot;review&quot;:true,&quot;reviewGroups&quot;:null,&quot;commentGroups&quot;:{},&quot;userInfoGroups&quot;:null},&quot;IsAnonymousUser&quot;:false,&quot;timezoneOffset&quot;:-180,&quot;coEditingMode&quot;:&quot;fast&quot;,&quot;jwtOpen&quot;:&quot;&quot;,&quot;supportAuthChangesAck&quot;:true}]</stringProp>
+            <stringProp name="requestData">42[&quot;message&quot;,{&quot;type&quot;:&quot;auth&quot;,&quot;docid&quot;:&quot;${doc-id}&quot;,&quot;documentCallbackUrl&quot;:&quot;${callback-url}&quot;,&quot;token&quot;:&quot;fghhfgsjdgfjs&quot;,&quot;user&quot;:{&quot;id&quot;:&quot;uid-1&quot;,&quot;username&quot;:&quot;John Smith&quot;,&quot;firstname&quot;:null,&quot;lastname&quot;:null,&quot;indexUser&quot;:-1},&quot;editorType&quot;:0,&quot;lastOtherSaveTime&quot;:-1,&quot;block&quot;:[],&quot;sessionId&quot;:null,&quot;sessionTimeConnect&quot;:null,&quot;sessionTimeIdle&quot;:0,&quot;documentFormatSave&quot;:65,&quot;view&quot;:false,&quot;isCloseCoAuthoring&quot;:false,&quot;openCmd&quot;:{&quot;c&quot;:&quot;open&quot;,&quot;id&quot;:&quot;${doc-id}&quot;,&quot;userid&quot;:&quot;uid-1&quot;,&quot;format&quot;:&quot;docx&quot;,&quot;url&quot;:&quot;${document-url}&quot;,&quot;title&quot;:&quot;new (47).docx&quot;,&quot;lcid&quot;:9,&quot;nobase64&quot;:true,&quot;convertToOrigin&quot;:&quot;.pdf.xps.oxps.djvu&quot;},&quot;lang&quot;:&quot;en&quot;,&quot;mode&quot;:&quot;edit&quot;,&quot;permissions&quot;:{&quot;chat&quot;:true,&quot;comment&quot;:true,&quot;copy&quot;:true,&quot;download&quot;:true,&quot;edit&quot;:true,&quot;fillForms&quot;:true,&quot;modifyContentControl&quot;:true,&quot;modifyFilter&quot;:true,&quot;print&quot;:true,&quot;review&quot;:true,&quot;reviewGroups&quot;:null,&quot;commentGroups&quot;:{},&quot;userInfoGroups&quot;:null},&quot;IsAnonymousUser&quot;:false,&quot;timezoneOffset&quot;:-180,&quot;coEditingMode&quot;:&quot;fast&quot;,&quot;jwtOpen&quot;:&quot;&quot;,&quot;supportAuthChangesAck&quot;:true}]</stringProp>
             <boolProp name="createNewConnection">false</boolProp>
             <boolProp name="loadDataFromFile">false</boolProp>
             <stringProp name="dataFile"></stringProp>

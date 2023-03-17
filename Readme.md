@@ -19,6 +19,7 @@ This repository describes how to run stress testing of [ONLYOFFICE Document Serv
 #### 1-user-save-changes-document.jmx
 
 - `number-of-threads`: JMeter thread group property.
+- `coeditors-count`: number of co-authors in one document. Set by the number of lines in changes.csv
 - `server-name-or-ip`: WebSocket host.
 - `port`: WebSocket port, the full URL looks like `ws://${server-name-or-ip}:${port}/doc/${doc-id}/c/806/e204ietx/websocket`.
 - `document-url`: URL to the docx document.
