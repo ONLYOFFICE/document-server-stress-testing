@@ -55,6 +55,18 @@
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">percentage of threads closing the connection at the end of the minute. calculated randomly for each thread (if (Math.random() * 100 &gt; ${close-session-percent-per-minute}) {continue;} else {close;})</stringProp>
           </elementProp>
+          <elementProp name="save-lock-delay" elementType="Argument">
+            <stringProp name="Argument.name">save-lock-delay</stringProp>
+            <stringProp name="Argument.value">500</stringProp>
+            <stringProp name="Argument.desc">constant delay for repeating saveLock request</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="save-lock-delay-random" elementType="Argument">
+            <stringProp name="Argument.name">save-lock-delay-random</stringProp>
+            <stringProp name="Argument.value">100</stringProp>
+            <stringProp name="Argument.desc">random delay maximum</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
           <elementProp name="connect-timeout" elementType="Argument">
             <stringProp name="Argument.name">connect-timeout</stringProp>
             <stringProp name="Argument.value">20000</stringProp>
@@ -554,9 +566,10 @@
                 <stringProp name="WhileController.condition">${__javaScript(&quot;${save-lock-res}&quot; == &quot;true&quot;,)}</stringProp>
               </WhileController>
               <hashTree>
-                <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
-                  <stringProp name="ConstantTimer.delay">100</stringProp>
-                </ConstantTimer>
+                <UniformRandomTimer guiclass="UniformRandomTimerGui" testclass="UniformRandomTimer" testname="Uniform Random Timer" enabled="true">
+                  <stringProp name="ConstantTimer.delay">${save-lock-delay}</stringProp>
+                  <stringProp name="RandomTimer.range">${save-lock-delay-random}</stringProp>
+                </UniformRandomTimer>
                 <hashTree/>
                 <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="send isSaveLock" enabled="true">
                   <boolProp name="TLS">false</boolProp>

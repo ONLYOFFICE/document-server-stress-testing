@@ -27,6 +27,8 @@ This repository describes how to run stress testing of [ONLYOFFICE Document Serv
 - `changes`: Only fits with a specific `document-url` and version 6.3 of [ONLYOFFICE Document Server][1].
 - `save-changes-throughput-per-minute`: Amount of saveChanges per minute (see JMeter constant throughput timer).
 - `close-session-percent-per-minute`: Percentage of threads closing the connection at the end of the minute, calculated by __threadNum.
+- `save-lock-delay` - constant delay for repeating saveLock request
+- `save-lock-delay-random` - random delay maximum
 - `connect-timeout`: Connect timeout (ms) for all requests.
 - `download-timeout`: Response (read) timeout (ms) for operations: "read documentOpen".
 - `auth-timeout`: Response (read) timeout (ms) for operations: "open and send auth".
