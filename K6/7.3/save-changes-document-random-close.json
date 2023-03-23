@@ -1,0 +1,16 @@
+{
+  "serverProtoSuffix": "",
+  "serverNameOrIp": "localhost",
+  "serverPort": 80,
+  "coeditorsCount": 1,
+  "saveChangesThroughputPerMinute": 10,
+  "closeSessionPercentPerMinute": 20,
+  "documentUrl": "http://d2ettrnqo7v976.cloudfront.net/stress-test/jmeter-test.docx",
+  "jwtSecret": "",
+  "timeoutConnection": 20000,
+  "timeoutAuth": 60000,
+  "timeoutDownload": 10000,
+  "timeoutConvertion": 600000,
+  "timeoutReadTimeout": 10000,
+  "timeoutSaveLock": 500
+}
