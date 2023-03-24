@@ -6,10 +6,10 @@ This document describes how to run stress testing of [ONLYOFFICE Document Server
 
 1. [Install](https://k6.io/docs/get-started/installation/) K6
 
-2. Fill your server proto, host, port in `save-changes-document-random-close.json
+2. Fill your server proto, host, port, secret in `save-changes-document-random-close.json
 
 3. [Run](https://k6.io/docs/get-started/running-k6/) test according to your execution mode. For example on local machine  
-`k6 run save-changes-document-random-close.js --vus=18`
+`k6 run save-changes-document-random-close.js --vus 18 --duration 10m`
 
 ## Overview of save-changes-document-random-close.json config file
 

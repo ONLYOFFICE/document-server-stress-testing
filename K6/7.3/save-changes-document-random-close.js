@@ -32,11 +32,16 @@
 
 import exec from 'k6/execution';
 import { SharedArray } from 'k6/data';
+import { Counter } from 'k6/metrics';
 import { setTimeout, clearTimeout} from 'k6/experimental/timers';
 import { randomString } from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
 import {DocsCoApi} from "./lib/docscoapi.js";
 
+const CounterErrors = new Counter('custom_counter_errors');
+
 export const options = {
+    discardResponseBodies: true,
+    thresholds: { custom_counter_errors: ['count==0'] },
     scenarios: {
         contacts: {
             executor: 'constant-vus',
@@ -86,31 +91,39 @@ async function startTest(cfg, docsCoApi) {
         let timeoutReadTimeout = configFile.timeoutReadTimeout;
         let timeoutSaveLock = configFile.timeoutSaveLock;
 
-        let docId = cfg.docIdPrefix + '_' + Math.floor(exec.vu.idInInstance / coeditorsCount);
+        let docId;
+        if (coeditorsCount > 1) {
+            docId = cfg.docIdPrefix + '_' + Math.ceil(exec.vu.idInInstance / coeditorsCount);
+        } else {
+            docId = 'k6_' + randomString(15);
+        }
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?EIO=4&transport=websocket`;
         let callbackUrl  = `http${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/dummyCallback`;
         let changes = changesArray[exec.vu.idInInstance % changesArray.length];
         let saveDelay = 60000 / saveChangesThroughputPerMinute;
 
-       // ${__javaScript(${iteration-condition} || (${__threadNum}-1) * 100 < ${__property(iteration-sliding-close)} * ${number-of-threads} || (${__property(iteration-sliding-close)} + ${close-session-percent-per-minute}) * ${number-of-threads} <= (${__threadNum}-1) * 100)}
-
         await docsCoApi.open(docId, jwtSecret, {url, documentUrl, callbackUrl}, {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload});
+        let startCloseSession = Date.now();
         while (true) {
-            let start = Date.now();
+            let startSaveChanges = Date.now();
             await docsCoApi.saveChanges(changes, {timeoutSaveLock, timeoutReadTimeout});
-            let end = Date.now();
-            if (end - start < saveDelay) {
-                await sleepPromise(saveDelay - (end - start))
+            let endSaveChanges = Date.now();
+            if (endSaveChanges - startSaveChanges < saveDelay) {
+                //saveChangesThroughputPerMinute
+                await sleepPromise(saveDelay - (endSaveChanges - startSaveChanges))
             }
-            let rnd = Math.random()
-            let ttt = closeSessionPercentPerMinute / (100 * 60);
-            console.error(`${rnd} < ${ttt}`)
-            if (Math.random() < ttt) {
-                break;
+
+            //closeSessionPercentPerMinute
+            if (Date.now() - startCloseSession > 60000) {
+                startCloseSession = Date.now();
+                if (Math.random() * 100 < closeSessionPercentPerMinute) {
+                    break;
+                }
             }
         }
         docsCoApi.close();
     } catch(err) {
+        CounterErrors.add(1);
         console.error(`catch error VU-${exec.vu.idInInstance}:`, err, err.stack);
         docsCoApi.close();
     }

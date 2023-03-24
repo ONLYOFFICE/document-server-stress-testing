@@ -38,11 +38,11 @@ import { SocketIoWrapper } from './socket.io.js';
 import { encode as jwtEncode} from './jwt.js';
 
 const trends = {
-    'connect': new Trend('trend_connect'),
-    'auth': new Trend('trend_auth'),
-    'convert': new Trend('trend_convert'),
-    'isSaveLock': new Trend('trend_isSaveLock'),
-    'saveChanges': new Trend('trend_saveChanges'),
+    'connect': new Trend('custom_trend_connect'),
+    'auth': new Trend('custom_trend_auth'),
+    'convert': new Trend('custom_trend_convert'),
+    'isSaveLock': new Trend('custom_trend_isSaveLock'),
+    'saveChanges': new Trend('custom_trend_saveChanges'),
 };
 
 export class DocsCoApi extends SocketIoWrapper{
@@ -50,7 +50,6 @@ export class DocsCoApi extends SocketIoWrapper{
         super();
         this.io = null;
         this.timeoutContext = {};
-        this.isAuth = false;
     }
     open(docId, jwtSecret, urls, timeouts) {
         return new Promise((resolve, reject) => {
@@ -79,7 +78,6 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         console.debug(`connect VU-${exec.vu.idInInstance}`);
         let timeouts = ctx.data.timeouts;
-        this.isAuth = false;
         ctx.data.authOperationCount = 0;
         this.private_setTimeout(`auth`, timeouts.timeoutAuth, ctx.data, (err) => {
             this.private_onAuth(err);
@@ -103,9 +101,11 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         ctx.data.authOperationCount++;
         if(ctx.data.authOperationCount >= 2) {
-            this.isAuth = true;
             ctx.data.resolve();
         }
+    };
+    private_onAuthChanges(err) {
+        this.private_send({"type": "authChangesAck"});
     };
     private_onDocumentOpen(err, msg) {
         let ctx = this.private_clearTimeout(`convert`);
@@ -124,15 +124,8 @@ export class DocsCoApi extends SocketIoWrapper{
             http.get(url, {timeout: ctx.data.timeouts.timeoutDownload});
             ctx.data.authOperationCount++;
             if(ctx.data.authOperationCount >= 2) {
-                this.isAuth = true;
                 ctx.data.resolve();
             }
-        } else {
-            if (ctx.data.reject) {
-                ctx.data.reject(new Error(`onDocumentOpen` + JSON.stringify(msg)));
-                ctx.data.reject = null;
-            }
-            return;
         }
     };
     private_onSaveLock(err, msg) {
@@ -194,6 +187,10 @@ export class DocsCoApi extends SocketIoWrapper{
             switch (msg.type) {
                 case `auth`: {
                     this.private_onAuth(null, msg);
+                    break;
+                }
+                case `authChanges`: {
+                    this.private_onAuthChanges(null, msg);
                     break;
                 }
                 case `documentOpen`: {
