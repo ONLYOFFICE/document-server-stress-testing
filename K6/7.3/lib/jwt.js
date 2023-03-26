@@ -1,3 +1,4 @@
+//https://gist.github.com/robingustafsson/7dd6463d85efdddbb0e4bcd3ecc706e1
 import crypto from "k6/crypto";
 import encoding from "k6/encoding";
 

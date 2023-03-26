@@ -37,11 +37,21 @@ import { setTimeout, clearTimeout} from 'k6/experimental/timers';
 import { randomString } from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
 import {DocsCoApi} from "./lib/docscoapi.js";
 
-const CounterErrors = new Counter('custom_counter_errors');
+const CounterExceptions = new Counter('custom_counter_all_exceptions');
+const CounterManualClose = new Counter('custom_counter_manual_close');
 
 export const options = {
+    summaryTimeUnit: 'ms',
     discardResponseBodies: true,
-    thresholds: { custom_counter_errors: ['count==0'] },
+    summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'count'],
+    thresholds: {
+        custom_counter_all_exceptions: ['count==0'],
+        custom_counter_connect: ['count==0'],
+        custom_counter_auth: ['count==0'],
+        custom_counter_convert: ['count==0'],
+        custom_counter_isSaveLock: ['count==0'],
+        custom_counter_saveChanges: ['count==0'],
+    },
     scenarios: {
         contacts: {
             executor: 'constant-vus',
@@ -63,18 +73,19 @@ export function setup() {
     return { docIdPrefix };
 }
 
+const docsCoApi = new DocsCoApi();
 export default function (data) {
-    const docsCoApi = new DocsCoApi();
     startTest(data, docsCoApi);
 
     docsCoApi.on('disconnect', () => {
-        console.debug(`disconnect VU-${exec.vu.idInInstance}`);
+        console.debug(`disconnect VU-${exec.vu.idInTest}`);
         docsCoApi.close();
     });
 }
+
 async function startTest(cfg, docsCoApi) {
     try {
-        console.debug(`startTest VU-${exec.vu.idInInstance}`);
+        console.debug(`startTest VU-${exec.vu.idInTest}`);
 
         let serverProtoSuffix = configFile.serverProtoSuffix;
         let serverNameOrIp = configFile.serverNameOrIp;
@@ -90,23 +101,25 @@ async function startTest(cfg, docsCoApi) {
         let timeoutConvertion = configFile.timeoutConvertion;
         let timeoutReadTimeout = configFile.timeoutReadTimeout;
         let timeoutSaveLock = configFile.timeoutSaveLock;
+        let timeoutSaveLockRandom = configFile.timeoutSaveLockRandom;
 
         let docId;
         if (coeditorsCount > 1) {
-            docId = cfg.docIdPrefix + '_' + Math.ceil(exec.vu.idInInstance / coeditorsCount);
+            docId = `${cfg.docIdPrefix}_${Math.ceil(exec.vu.idInTest / coeditorsCount)}_${exec.vu.iterationInScenario}`;
         } else {
-            docId = 'k6_' + randomString(15);
+            docId = `${cfg.docIdPrefix}_${exec.vu.idInTest}_${exec.vu.iterationInScenario}`;
         }
+        let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?EIO=4&transport=websocket`;
         let callbackUrl  = `http${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/dummyCallback`;
-        let changes = changesArray[exec.vu.idInInstance % changesArray.length];
+        let changes = changesArray[exec.vu.idInTest % changesArray.length];
         let saveDelay = 60000 / saveChangesThroughputPerMinute;
 
-        await docsCoApi.open(docId, jwtSecret, {url, documentUrl, callbackUrl}, {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload});
+        await docsCoApi.open(docId, userId, jwtSecret, {url, documentUrl, callbackUrl}, {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload});
         let startCloseSession = Date.now();
         while (true) {
             let startSaveChanges = Date.now();
-            await docsCoApi.saveChanges(changes, {timeoutSaveLock, timeoutReadTimeout});
+            await docsCoApi.saveChanges(changes, {timeoutSaveLock, timeoutSaveLockRandom, timeoutReadTimeout});
             let endSaveChanges = Date.now();
             if (endSaveChanges - startSaveChanges < saveDelay) {
                 //saveChangesThroughputPerMinute
@@ -120,11 +133,16 @@ async function startTest(cfg, docsCoApi) {
                     break;
                 }
             }
+            if (exec.scenario.progress >= 1) {
+                //for gracefulStop
+                break;
+            }
         }
+        CounterManualClose.add(1);
         docsCoApi.close();
     } catch(err) {
-        CounterErrors.add(1);
-        console.error(`catch error VU-${exec.vu.idInInstance}:`, err, err.stack);
+        CounterExceptions.add(1);
+        console.error(`catch error VU-${exec.vu.idInTest}:`, err, err.stack);
         docsCoApi.close();
     }
 }

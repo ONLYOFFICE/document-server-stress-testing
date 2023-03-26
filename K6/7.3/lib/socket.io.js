@@ -30,6 +30,9 @@
  *
  */
 
+//watch for updates to replace this file with the official k6 module
+//https://github.com/grafana/k6/issues/1306
+
 import exec from 'k6/execution';
 import { WebSocket } from 'k6/experimental/websockets';
 
@@ -68,6 +71,7 @@ export class  SocketIoWrapper{
             });
 
             this.ws.addEventListener('close', () => {
+                console.debug(`disconnect VU-${exec.vu.idInTest}`);
                 this.private_emitEvent('disconnect', this);
             });
         });
@@ -77,7 +81,7 @@ export class  SocketIoWrapper{
     }
     close() {
         this.ws && this.ws.close();
-        console.debug(`close VU-${exec.vu.idInInstance}`);
+        console.debug(`close VU-${exec.vu.idInTest}`);
     }
     on(event, callback) {
         this.callbacks[event] = callback;
@@ -87,7 +91,7 @@ export class  SocketIoWrapper{
         this.private_send(msg);
     }
     private_processMessage(msg) {
-        console.debug(`event VU-${exec.vu.idInInstance}: `, msg.substr(0, 1000));
+        console.debug(`event VU-${exec.vu.idInTest}: `, msg.substr(0, 1000));
         const engineType = parseInt(msg[0]);
         const socketType = parseInt(msg[1]);
         switch (engineType) {
@@ -126,7 +130,7 @@ export class  SocketIoWrapper{
     }
     private_send(msg) {
         this.ws.send(msg);
-        console.debug(`emit VU-${exec.vu.idInInstance}: `, msg.substr(0, 1000));
+        console.debug(`emit VU-${exec.vu.idInTest}: `, msg.substr(0, 1000));
     }
 }
 

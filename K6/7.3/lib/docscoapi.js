@@ -31,29 +31,37 @@
  */
 
 import http from 'k6/http';
-import { Trend } from 'k6/metrics';
+import { Trend, Counter } from 'k6/metrics';
 import exec from 'k6/execution';
 import { setTimeout, clearTimeout} from 'k6/experimental/timers';
 import { SocketIoWrapper } from './socket.io.js';
 import { encode as jwtEncode} from './jwt.js';
 
 const trends = {
-    'connect': new Trend('custom_trend_connect'),
-    'auth': new Trend('custom_trend_auth'),
-    'convert': new Trend('custom_trend_convert'),
-    'isSaveLock': new Trend('custom_trend_isSaveLock'),
-    'saveChanges': new Trend('custom_trend_saveChanges'),
+    'connect': new Trend('custom_trend_connect', true),
+    'auth': new Trend('custom_trend_auth', true),
+    'convert': new Trend('custom_trend_convert', true),
+    'isSaveLock': new Trend('custom_trend_isSaveLock', true),
+    'saveChanges': new Trend('custom_trend_saveChanges', true),
 };
+const counter = {
+    'connect': new Counter('custom_counter_connect'),
+    'auth': new Counter('custom_counter_auth'),
+    'convert': new Counter('custom_counter_convert'),
+    'isSaveLock': new Counter('custom_counter_isSaveLock'),
+    'saveChanges': new Counter('custom_counter_saveChanges'),
+}
 
 export class DocsCoApi extends SocketIoWrapper{
     constructor() {
         super();
         this.io = null;
         this.timeoutContext = {};
+        this.saveLockTimeout = null;
     }
-    open(docId, jwtSecret, urls, timeouts) {
+    open(docId, userId, jwtSecret, urls, timeouts) {
         return new Promise((resolve, reject) => {
-            this.private_open(docId, jwtSecret, urls, timeouts, resolve, reject);
+            this.private_open(docId, userId, jwtSecret, urls, timeouts, resolve, reject);
         });
     }
     saveChanges(changes, timeouts) {
@@ -65,18 +73,20 @@ export class DocsCoApi extends SocketIoWrapper{
         this.io && this.io.close();
     }
     private_onConect(err) {
-        let ctx = this.private_clearTimeout(`connect`);
+        let name = `connect`;
+        let ctx = this.private_clearTimeout(name);
         if (!ctx) {
             return;
         }
         if (err) {
             if (ctx.data.reject) {
+                counter[name].add(1);
                 ctx.data.reject(err);
                 ctx.data.reject = null;
             }
             return;
         }
-        console.debug(`connect VU-${exec.vu.idInInstance}`);
+        console.debug(`connect VU-${exec.vu.idInTest}`);
         let timeouts = ctx.data.timeouts;
         ctx.data.authOperationCount = 0;
         this.private_setTimeout(`auth`, timeouts.timeoutAuth, ctx.data, (err) => {
@@ -85,15 +95,17 @@ export class DocsCoApi extends SocketIoWrapper{
         this.private_setTimeout(`convert`,timeouts.timeoutConvertion, ctx.data, (err) => {
             this.private_onDocumentOpen(err);
         });
-        this.private_auth(ctx.data.docId, ctx.data.jwtSecret, ctx.data.urls.documentUrl, ctx.data.urls.callbackUrl);
+        this.private_auth(ctx.data.docId, ctx.data.userId , ctx.data.jwtSecret, ctx.data.urls.documentUrl, ctx.data.urls.callbackUrl);
     };
     private_onAuth(err) {
-        let ctx = this.private_clearTimeout(`auth`);
+        let name = `auth`;
+        let ctx = this.private_clearTimeout(name);
         if (!ctx) {
             return;
         }
         if (err) {
             if (ctx.data.reject) {
+                counter[name].add(1);
                 ctx.data.reject(err);
                 ctx.data.reject = null;
             }
@@ -108,12 +120,14 @@ export class DocsCoApi extends SocketIoWrapper{
         this.private_send({"type": "authChangesAck"});
     };
     private_onDocumentOpen(err, msg) {
-        let ctx = this.private_clearTimeout(`convert`);
+        let name = `convert`;
+        let ctx = this.private_clearTimeout(name);
         if (!ctx) {
             return;
         }
         if (err) {
             if (ctx.data.reject) {
+                counter[name].add(1);
                 ctx.data.reject(err);
                 ctx.data.reject = null;
             }
@@ -129,12 +143,14 @@ export class DocsCoApi extends SocketIoWrapper{
         }
     };
     private_onSaveLock(err, msg) {
-        let ctx = this.private_clearTimeout(`isSaveLock`);
+        let name = `isSaveLock`;
+        let ctx = this.private_clearTimeout(name);
         if (!ctx) {
             return;
         }
         if (err) {
             if (ctx.data.reject) {
+                counter[name].add(1);
                 ctx.data.reject(err);
                 ctx.data.reject = null;
             }
@@ -145,23 +161,27 @@ export class DocsCoApi extends SocketIoWrapper{
         let changes = ctx.data.changes;
         let timeouts = ctx.data.timeouts;
         if (msg.saveLock) {
-            setTimeout(() => {
+            let timeoutSaveLock = ctx.data.timeouts.timeoutSaveLock + Math.floor(Math.random() * ctx.data.timeouts.timeoutSaveLockRandom);
+            this.saveLockTimeout = setTimeout(() => {
+                this.saveLockTimeout = null;
                 this.private_setTimeout(`isSaveLock`, timeouts.timeoutReadTimeout, ctx.data, (err) => {
                     this.private_onSaveLock(err);
                 });
                 this.private_isSaveLock(resolve, reject, changes, timeouts);
-            }, ctx.data.timeouts.timeoutSaveLock);
+            }, timeoutSaveLock);
         } else {
             this.private_saveChanges(resolve, reject, changes, timeouts);
         }
     };
     private_onUnSaveLock(err) {
-        let ctx = this.private_clearTimeout(`saveChanges`);
+        let name = `saveChanges`;
+        let ctx = this.private_clearTimeout(name);
         if (!ctx) {
             return;
         }
         if (err) {
             if (ctx.data.reject) {
+                counter[name].add(1);
                 ctx.data.reject(err);
                 ctx.data.reject = null;
             }
@@ -169,11 +189,11 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         ctx.data.resolve();
     };
-    private_open(docId, jwtSecret, urls, timeouts, resolve, reject) {
+    private_open(docId, userId, jwtSecret, urls, timeouts, resolve, reject) {
         this.io = new SocketIoWrapper();
 
         this.private_setTimeout(`connect`, timeouts.timeoutConnection,
-            {resolve, reject, docId, jwtSecret, urls, timeouts},
+            {resolve, reject, docId, userId, jwtSecret, urls, timeouts},
             (err) => {
             this.private_onConect(err);
         });
@@ -182,6 +202,9 @@ export class DocsCoApi extends SocketIoWrapper{
         });
         this.io.on(`error`, (error) => {
             this.private_onConect(error);
+        });
+        this.io.on(`disconnect`, () => {
+            this.private_clearAllTimeouts();
         });
         this.io.on(`message`, (msg) => {
             switch (msg.type) {
@@ -219,9 +242,9 @@ export class DocsCoApi extends SocketIoWrapper{
                     break;
             }
         });
-        this.io.connect(urls.url, this.private_getOpenToken(docId, jwtSecret, urls.documentUrl, urls.callbackUrl));
+        this.io.connect(urls.url, this.private_getOpenToken(docId, userId, jwtSecret, urls.documentUrl, urls.callbackUrl));
     };
-    private_getOpenToken(docId, jwtSecret, documentUrl, callbackUrl) {
+    private_getOpenToken(docId, userId, jwtSecret, documentUrl, callbackUrl) {
         if (!jwtSecret) {
             return null;
         }
@@ -247,18 +270,21 @@ export class DocsCoApi extends SocketIoWrapper{
             },
             editorConfig: {
                 callbackUrl: callbackUrl,
-                "mode": "edit"
+                "mode": "edit",
+                "user": {
+                    "id": userId
+                }
             }
         };
         return jwtEncode(data, jwtSecret);
     }
-    private_auth(docId, jwtSecret, documentUrl, callbackUrl) {
+    private_auth(docId, userId, jwtSecret, documentUrl, callbackUrl) {
         let data = {
             "type": "auth",
             "docid": `${docId}`,
             "documentCallbackUrl": `${callbackUrl}`,
             "token": "fghhfgsjdgfjs",
-            "user": {"id": "uid-1", "username": "John Smith", "firstname": null, "lastname": null, "indexUser": -1},
+            "user": {"id": userId, "username": "John Smith", "firstname": null, "lastname": null, "indexUser": -1},
             "editorType": 0,
             "lastOtherSaveTime": -1,
             "block": [],
@@ -303,7 +329,7 @@ export class DocsCoApi extends SocketIoWrapper{
             "supportAuthChangesAck": true
         };
         if (jwtSecret) {
-            data.jwtOpen = this.private_getOpenToken(docId, jwtSecret, documentUrl, callbackUrl);
+            data.jwtOpen = this.private_getOpenToken(docId, userId, jwtSecret, documentUrl, callbackUrl);
         }
         this.private_send(data);
     }
@@ -353,5 +379,17 @@ export class DocsCoApi extends SocketIoWrapper{
             return ctx;
         }
         return null;
+    }
+    private_clearAllTimeouts() {
+        for (let name in this.timeoutContext) {
+            if (this.timeoutContext.hasOwnProperty(name)) {
+                clearTimeout(this.timeoutContext[name].timeoutId);
+                delete this.timeoutContext[name];
+            }
+        }
+        if (this.saveLockTimeout) {
+            clearTimeout(this.saveLockTimeout);
+            this.saveLockTimeout = null;
+        }
     }
 }

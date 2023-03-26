@@ -12,5 +12,6 @@
   "timeoutDownload": 10000,
   "timeoutConvertion": 600000,
   "timeoutReadTimeout": 10000,
-  "timeoutSaveLock": 500
+  "timeoutSaveLock": 500,
+  "timeoutSaveLockRandom": 100
 }
