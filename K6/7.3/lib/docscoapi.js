@@ -45,11 +45,11 @@ const trends = {
     'saveChanges': new Trend('custom_trend_saveChanges', true),
 };
 const counter = {
-    'connect': new Counter('custom_counter_connect'),
-    'auth': new Counter('custom_counter_auth'),
-    'convert': new Counter('custom_counter_convert'),
-    'isSaveLock': new Counter('custom_counter_isSaveLock'),
-    'saveChanges': new Counter('custom_counter_saveChanges'),
+    'connect': new Counter('custom_counter_exception_connect'),
+    'auth': new Counter('custom_counter_exception_auth'),
+    'convert': new Counter('custom_counter_exception_convert'),
+    'isSaveLock': new Counter('custom_counter_exception_isSaveLock'),
+    'saveChanges': new Counter('custom_counter_exception_saveChanges'),
 }
 
 export class DocsCoApi extends SocketIoWrapper{

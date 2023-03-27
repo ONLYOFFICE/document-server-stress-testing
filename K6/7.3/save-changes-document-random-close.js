@@ -37,7 +37,7 @@ import { setTimeout, clearTimeout} from 'k6/experimental/timers';
 import { randomString } from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
 import {DocsCoApi} from "./lib/docscoapi.js";
 
-const CounterExceptions = new Counter('custom_counter_all_exceptions');
+const CounterExceptions = new Counter('custom_counter_exception_all');
 const CounterManualClose = new Counter('custom_counter_manual_close');
 
 export const options = {
@@ -45,12 +45,12 @@ export const options = {
     discardResponseBodies: true,
     summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'count'],
     thresholds: {
-        custom_counter_all_exceptions: ['count==0'],
-        custom_counter_connect: ['count==0'],
-        custom_counter_auth: ['count==0'],
-        custom_counter_convert: ['count==0'],
-        custom_counter_isSaveLock: ['count==0'],
-        custom_counter_saveChanges: ['count==0'],
+        custom_counter_exception_all: ['count==0'],
+        custom_counter_exception_connect: ['count==0'],
+        custom_counter_exception_auth: ['count==0'],
+        custom_counter_exception_convert: ['count==0'],
+        custom_counter_exception_isSaveLock: ['count==0'],
+        custom_counter_exception_saveChanges: ['count==0'],
     },
     scenarios: {
         contacts: {
