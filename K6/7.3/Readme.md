@@ -28,7 +28,6 @@ This document describes how to run stress testing of [ONLYOFFICE Document Server
 - `timeoutReadTimeout`:  Response (read) timeout (ms) for operations: "read license", "read auth", "read getLock", "read saveLock", "read unSaveLock".
 - `timeoutSaveLock`:  constant delay for repeating saveLock request
 - `timeoutSaveLockRandom`:  maximum random addition to timeoutSaveLock 
-- `timeoutSaveLockLoop`:  Loop limit to prevent connection closed with "transport error"
 
 ## Data set of document changes
 

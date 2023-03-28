@@ -57,7 +57,6 @@ export class DocsCoApi extends SocketIoWrapper{
         super();
         this.io = null;
         this.timeoutContext = {};
-        this.saveLockTimeout = null;
     }
     open(docId, userId, jwtSecret, urls, timeouts) {
         return new Promise((resolve, reject) => {
@@ -66,7 +65,7 @@ export class DocsCoApi extends SocketIoWrapper{
     }
     saveChanges(changes, timeouts) {
         return new Promise((resolve, reject) => {
-            this.private_isSaveLock(resolve, reject, changes, timeouts, Date.now());
+            this.private_isSaveLock(resolve, reject, changes, timeouts);
         });
     }
     close() {
@@ -160,20 +159,8 @@ export class DocsCoApi extends SocketIoWrapper{
         let reject = ctx.data.reject;
         let changes = ctx.data.changes;
         let timeouts = ctx.data.timeouts;
-        let start = ctx.data.start;
         if (msg.saveLock) {
-            if (start + ctx.data.timeouts.timeoutSaveLockLoop < Date.now()) {
-                let timeoutSaveLock = ctx.data.timeouts.timeoutSaveLock + Math.floor(Math.random() * ctx.data.timeouts.timeoutSaveLockRandom);
-                this.saveLockTimeout = setTimeout(() => {
-                    this.saveLockTimeout = null;
-                    this.private_setTimeout(`isSaveLock`, timeouts.timeoutReadTimeout, ctx.data, (err) => {
-                        this.private_onSaveLock(err);
-                    });
-                    this.private_isSaveLock(resolve, reject, changes, timeouts, start);
-                }, timeoutSaveLock);
-            } else {
-                resolve(false);
-            }
+            resolve(false);
         } else {
             this.private_saveChanges(resolve, reject, changes, timeouts);
         }
@@ -342,7 +329,7 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         this.private_send(data);
     }
-    private_isSaveLock(resolve, reject, changes, timeouts, start) {
+    private_isSaveLock(resolve, reject, changes, timeouts) {
         this.private_setTimeout(`isSaveLock`, timeouts.timeoutReadTimeout, {resolve, reject, changes, timeouts}, (err) => {
             this.private_onSaveLock(err);
         });
@@ -395,10 +382,6 @@ export class DocsCoApi extends SocketIoWrapper{
                 clearTimeout(this.timeoutContext[name].timeoutId);
                 delete this.timeoutContext[name];
             }
-        }
-        if (this.saveLockTimeout) {
-            clearTimeout(this.saveLockTimeout);
-            this.saveLockTimeout = null;
         }
     }
 }

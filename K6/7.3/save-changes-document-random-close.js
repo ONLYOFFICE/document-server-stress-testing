@@ -70,6 +70,7 @@ const configFile = JSON.parse(open('./save-changes-document-random-close.json'))
 
 export function setup() {
     let docIdPrefix = 'k6_' + randomString(10);
+    console.info(`docIdPrefix: ${docIdPrefix}`);
     return { docIdPrefix };
 }
 
@@ -102,7 +103,6 @@ async function startTest(cfg, docsCoApi) {
         let timeoutReadTimeout = configFile.timeoutReadTimeout;
         let timeoutSaveLock = configFile.timeoutSaveLock;
         let timeoutSaveLockRandom = configFile.timeoutSaveLockRandom;
-        let timeoutSaveLockLoop = configFile.timeoutSaveLockLoop;
 
         //add minutesOfDay to docId to avoid collisions with coediting saved file
         let minutesOfDay = new Date().getHours() * 60 + new Date().getMinutes();
@@ -122,11 +122,17 @@ async function startTest(cfg, docsCoApi) {
         let startCloseSession = Date.now();
         while (true) {
             let startSaveChanges = Date.now();
-            await docsCoApi.saveChanges(changes, {timeoutSaveLock, timeoutSaveLockRandom, timeoutSaveLockLoop, timeoutReadTimeout});
+            let saveRes = await docsCoApi.saveChanges(changes, {timeoutReadTimeout});
             let endSaveChanges = Date.now();
-            if (endSaveChanges - startSaveChanges < saveDelay) {
-                //saveChangesThroughputPerMinute
-                await sleepPromise(saveDelay - (endSaveChanges - startSaveChanges))
+            if (saveRes) {
+                if (endSaveChanges - startSaveChanges < saveDelay) {
+                    //saveChangesThroughputPerMinute
+                    await sleepPromise(saveDelay - (endSaveChanges - startSaveChanges));
+                }
+            } else {
+                //save is locked. wait random time
+                let lockDelay = timeoutSaveLock + Math.floor(Math.random() * timeoutSaveLockRandom);
+                await sleepPromise(lockDelay);
             }
 
             //closeSessionPercentPerMinute
