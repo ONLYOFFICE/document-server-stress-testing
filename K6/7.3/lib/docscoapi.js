@@ -66,7 +66,7 @@ export class DocsCoApi extends SocketIoWrapper{
     }
     saveChanges(changes, timeouts) {
         return new Promise((resolve, reject) => {
-            this.private_isSaveLock(resolve, reject, changes, timeouts);
+            this.private_isSaveLock(resolve, reject, changes, timeouts, Date.now());
         });
     }
     close() {
@@ -160,15 +160,20 @@ export class DocsCoApi extends SocketIoWrapper{
         let reject = ctx.data.reject;
         let changes = ctx.data.changes;
         let timeouts = ctx.data.timeouts;
+        let start = ctx.data.start;
         if (msg.saveLock) {
-            let timeoutSaveLock = ctx.data.timeouts.timeoutSaveLock + Math.floor(Math.random() * ctx.data.timeouts.timeoutSaveLockRandom);
-            this.saveLockTimeout = setTimeout(() => {
-                this.saveLockTimeout = null;
-                this.private_setTimeout(`isSaveLock`, timeouts.timeoutReadTimeout, ctx.data, (err) => {
-                    this.private_onSaveLock(err);
-                });
-                this.private_isSaveLock(resolve, reject, changes, timeouts);
-            }, timeoutSaveLock);
+            if (start + ctx.data.timeouts.timeoutSaveLockLoop < Date.now()) {
+                let timeoutSaveLock = ctx.data.timeouts.timeoutSaveLock + Math.floor(Math.random() * ctx.data.timeouts.timeoutSaveLockRandom);
+                this.saveLockTimeout = setTimeout(() => {
+                    this.saveLockTimeout = null;
+                    this.private_setTimeout(`isSaveLock`, timeouts.timeoutReadTimeout, ctx.data, (err) => {
+                        this.private_onSaveLock(err);
+                    });
+                    this.private_isSaveLock(resolve, reject, changes, timeouts, start);
+                }, timeoutSaveLock);
+            } else {
+                resolve(false);
+            }
         } else {
             this.private_saveChanges(resolve, reject, changes, timeouts);
         }
@@ -187,7 +192,7 @@ export class DocsCoApi extends SocketIoWrapper{
             }
             return;
         }
-        ctx.data.resolve();
+        ctx.data.resolve(true);
     };
     private_open(docId, userId, jwtSecret, urls, timeouts, resolve, reject) {
         this.io = new SocketIoWrapper();
@@ -200,8 +205,12 @@ export class DocsCoApi extends SocketIoWrapper{
         this.io.on(`connect`, () => {
             this.private_onConect(null);
         });
-        this.io.on(`error`, (error) => {
-            this.private_onConect(error);
+        this.io.on(`error`, (err) => {
+            this.private_onConect(err);
+            this.private_onAuth(err);
+            this.private_onDocumentOpen(err);
+            this.private_onSaveLock(err);
+            this.private_onUnSaveLock(err);
         });
         this.io.on(`disconnect`, () => {
             this.private_clearAllTimeouts();
@@ -333,7 +342,7 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         this.private_send(data);
     }
-    private_isSaveLock(resolve, reject, changes, timeouts) {
+    private_isSaveLock(resolve, reject, changes, timeouts, start) {
         this.private_setTimeout(`isSaveLock`, timeouts.timeoutReadTimeout, {resolve, reject, changes, timeouts}, (err) => {
             this.private_onSaveLock(err);
         });

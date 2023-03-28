@@ -102,12 +102,15 @@ async function startTest(cfg, docsCoApi) {
         let timeoutReadTimeout = configFile.timeoutReadTimeout;
         let timeoutSaveLock = configFile.timeoutSaveLock;
         let timeoutSaveLockRandom = configFile.timeoutSaveLockRandom;
+        let timeoutSaveLockLoop = configFile.timeoutSaveLockLoop;
 
+        //add minutesOfDay to docId to avoid collisions with coediting saved file
+        let minutesOfDay = new Date().getHours() * 60 + new Date().getMinutes();
         let docId;
         if (coeditorsCount > 1) {
-            docId = `${cfg.docIdPrefix}_${Math.ceil(exec.vu.idInTest / coeditorsCount)}_${exec.vu.iterationInScenario}`;
+            docId = `${cfg.docIdPrefix}_${minutesOfDay}_${Math.ceil(exec.vu.idInTest / coeditorsCount)}_${exec.vu.iterationInScenario}`;
         } else {
-            docId = `${cfg.docIdPrefix}_${exec.vu.idInTest}_${exec.vu.iterationInScenario}`;
+            docId = `${cfg.docIdPrefix}_${minutesOfDay}_${exec.vu.idInTest}_${exec.vu.iterationInScenario}`;
         }
         let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?EIO=4&transport=websocket`;
@@ -119,7 +122,7 @@ async function startTest(cfg, docsCoApi) {
         let startCloseSession = Date.now();
         while (true) {
             let startSaveChanges = Date.now();
-            await docsCoApi.saveChanges(changes, {timeoutSaveLock, timeoutSaveLockRandom, timeoutReadTimeout});
+            await docsCoApi.saveChanges(changes, {timeoutSaveLock, timeoutSaveLockRandom, timeoutSaveLockLoop, timeoutReadTimeout});
             let endSaveChanges = Date.now();
             if (endSaveChanges - startSaveChanges < saveDelay) {
                 //saveChangesThroughputPerMinute
@@ -129,6 +132,7 @@ async function startTest(cfg, docsCoApi) {
             //closeSessionPercentPerMinute
             if (Date.now() - startCloseSession > 60000) {
                 startCloseSession = Date.now();
+                //todo close all coeditors
                 if (Math.random() * 100 < closeSessionPercentPerMinute) {
                     break;
                 }

@@ -13,5 +13,6 @@
   "timeoutConvertion": 600000,
   "timeoutReadTimeout": 10000,
   "timeoutSaveLock": 500,
-  "timeoutSaveLockRandom": 100
+  "timeoutSaveLockRandom": 100,
+  "timeoutSaveLockLoop": 10000
 }
