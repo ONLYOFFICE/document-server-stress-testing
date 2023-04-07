@@ -70,7 +70,7 @@ const configFile = JSON.parse(open('./save-changes-document-random-close.json'))
 
 export function setup() {
     let docIdPrefix = 'k6_' + randomString(10);
-    console.info(`docIdPrefix: ${docIdPrefix}`);
+    console.info(`docIdPrefix: ${docIdPrefix} start time: ${new Date().toISOString()}`);
     return { docIdPrefix };
 }
 
@@ -114,7 +114,7 @@ async function startTest(cfg, docsCoApi) {
         }
         let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?EIO=4&transport=websocket`;
-        let callbackUrl  = `http${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/dummyCallback`;
+        let callbackUrl  = '';
         let changes = changesArray[exec.vu.idInTest % changesArray.length];
         let saveDelay = 60000 / saveChangesThroughputPerMinute;
 
