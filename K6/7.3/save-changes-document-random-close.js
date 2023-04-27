@@ -105,13 +105,14 @@ async function startTest(cfg, docsCoApi) {
         let timeoutSaveLockRandom = configFile.timeoutSaveLockRandom;
 
         //add minutesOfDay to docId to avoid collisions with coediting saved file
-        let minutesOfDay = new Date().getHours() * 60 + new Date().getMinutes();
-        let docId;
+        let minutesOfDay = getMinutesOfDay();
+        let docIdIndex;
         if (coeditorsCount > 1) {
-            docId = `${cfg.docIdPrefix}_${minutesOfDay}_${Math.ceil(exec.vu.idInTest / coeditorsCount)}_${exec.vu.iterationInScenario}`;
+            docIdIndex = Math.ceil(exec.vu.idInTest / coeditorsCount);
         } else {
-            docId = `${cfg.docIdPrefix}_${minutesOfDay}_${exec.vu.idInTest}_${exec.vu.iterationInScenario}`;
+            docIdIndex = exec.vu.idInTest;
         }
+        let docId = `${cfg.docIdPrefix}_${minutesOfDay}_${docIdIndex}_${exec.vu.iterationInScenario}`;
         let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?EIO=4&transport=websocket`;
         let callbackUrl  = '';
@@ -138,9 +139,22 @@ async function startTest(cfg, docsCoApi) {
             //closeSessionPercentPerMinute
             if (Date.now() - startCloseSession > 60000) {
                 startCloseSession = Date.now();
-                //todo close all coeditors
-                if (Math.random() * 100 < closeSessionPercentPerMinute) {
+                if (100 === closeSessionPercentPerMinute) {
                     break;
+                } else {
+                    let curMinutesOfDay = getMinutesOfDay();
+                    let docIdVPercent = docIdIndex % 100;
+                    let left = (curMinutesOfDay * closeSessionPercentPerMinute) % 100;
+                    let right = ((curMinutesOfDay + 1) * closeSessionPercentPerMinute) % 100;
+                    if (left < right) {
+                        if (left <= docIdVPercent && docIdVPercent < right) {
+                            console.debug(`Break VU-${exec.vu.idInTest} left-${left} docIdVPercent-${docIdVPercent} right-${right}`);
+                            break;
+                        }
+                    } else if (!(right <= docIdVPercent && docIdVPercent < left)) {
+                        console.debug(`Break reversed VU-${exec.vu.idInTest} left-${left} docIdVPercent-${docIdVPercent} right-${right}`);
+                        break;
+                    }
                 }
             }
             if (exec.scenario.progress >= 1) {
@@ -158,4 +172,7 @@ async function startTest(cfg, docsCoApi) {
 }
 function sleepPromise(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+function getMinutesOfDay() {
+    return new Date().getHours() * 60 + new Date().getMinutes();
 }
