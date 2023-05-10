@@ -61,12 +61,12 @@ export const options = {
     },
 };
 
+const configFile = JSON.parse(open('./save-changes-document-random-close.json'));
+
 const changesArray = new SharedArray('changes', function () {
-    const file = open('./dataset/changes.csv');
+    const file = open(configFile.changesPath);
     return file.split('\n').map((line) => line.replace(/\\/g, ''));
 });
-
-const configFile = JSON.parse(open('./save-changes-document-random-close.json'));
 
 export function setup() {
     let docIdPrefix = 'k6_' + randomString(10);

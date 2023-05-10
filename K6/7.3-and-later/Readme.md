@@ -27,6 +27,7 @@ This document describes how to run stress testing of [ONLYOFFICE Document Server
 - `saveChangesThroughputPerMinute`: Amount of saveChanges per minute
 - `closeSessionPercentPerMinute`: Percentage of threads closing per minute
 - `documentUrl`:  URL to the document.
+- `changesPath`:  path to the document with changes.
 - `jwtSecret`: secret from `services.CoAuthoring.secret.inbox.string` or empty if jwt is turned off
 - `timeoutConnection`:  connect timeout (ms) for all requests.
 - `timeoutAuth`:  Response (read) timeout (ms) for "auth".
