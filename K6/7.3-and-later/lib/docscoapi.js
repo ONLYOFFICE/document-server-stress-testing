@@ -57,6 +57,8 @@ export class DocsCoApi extends SocketIoWrapper{
         super();
         this.io = null;
         this.timeoutContext = {};
+        this.syncChangesIndex = 0;
+        this.authChangesIndex = 0;
     }
     open(docId, userId, jwtSecret, urls, timeouts) {
         return new Promise((resolve, reject) => {
@@ -86,6 +88,8 @@ export class DocsCoApi extends SocketIoWrapper{
             return;
         }
         console.debug(`connect VU-${exec.vu.idInTest}`);
+        this.syncChangesIndex = 0;
+        this.authChangesIndex = 0;
         let timeouts = ctx.data.timeouts;
         ctx.data.authOperationCount = 0;
         this.private_setTimeout(`auth`, timeouts.timeoutAuth, ctx.data, (err) => {
@@ -95,6 +99,13 @@ export class DocsCoApi extends SocketIoWrapper{
             this.private_onDocumentOpen(err);
         });
         this.private_auth(ctx.data.docId, ctx.data.userId , ctx.data.jwtSecret, ctx.data.urls.documentUrl, ctx.data.urls.callbackUrl);
+    };
+    private_AuthCount(ctx) {
+        ctx.data.authOperationCount++;
+        if (ctx.data.authOperationCount >= 2) {
+            this.syncChangesIndex = Math.max(this.authChangesIndex, this.syncChangesIndex);
+            ctx.data.resolve();
+        }
     };
     private_onAuth(err) {
         let name = `auth`;
@@ -110,12 +121,13 @@ export class DocsCoApi extends SocketIoWrapper{
             }
             return;
         }
-        ctx.data.authOperationCount++;
-        if(ctx.data.authOperationCount >= 2) {
-            ctx.data.resolve();
-        }
+        this.private_AuthCount(ctx);
     };
-    private_onAuthChanges(err) {
+    private_onAuthChanges(err, msg) {
+        if (msg && msg.changes) {
+            this.authChangesIndex += msg.changes.length;
+        }
+
         this.private_send({"type": "authChangesAck"});
     };
     private_onDocumentOpen(err, msg) {
@@ -135,10 +147,7 @@ export class DocsCoApi extends SocketIoWrapper{
         if(msg && msg.data && msg.data.data) {
             const url = msg.data.data["Editor.bin"];
             http.get(url, {timeout: ctx.data.timeouts.timeoutDownload});
-            ctx.data.authOperationCount++;
-            if(ctx.data.authOperationCount >= 2) {
-                ctx.data.resolve();
-            }
+            this.private_AuthCount(ctx);
         }
     };
     private_onSaveLock(err, msg) {
@@ -165,7 +174,17 @@ export class DocsCoApi extends SocketIoWrapper{
             this.private_saveChanges(resolve, reject, changes, timeouts);
         }
     };
-    private_onUnSaveLock(err) {
+    private_onSaveChanges(msg) {
+        if (msg && undefined !== msg.syncChangesIndex && -1 !== msg.syncChangesIndex) {
+            this.syncChangesIndex = msg.syncChangesIndex;
+        }
+    };
+    private_onSavePartChanges(msg) {
+        if (msg && undefined !== msg.syncChangesIndex && -1 !== msg.syncChangesIndex) {
+            this.syncChangesIndex = msg.syncChangesIndex;
+        }
+    };
+    private_onUnSaveLock(err, msg) {
         let name = `saveChanges`;
         let ctx = this.private_clearTimeout(name);
         if (!ctx) {
@@ -178,6 +197,9 @@ export class DocsCoApi extends SocketIoWrapper{
                 ctx.data.reject = null;
             }
             return;
+        }
+        if (msg && undefined !== msg.syncChangesIndex && -1 !== msg.syncChangesIndex) {
+            this.syncChangesIndex = msg.syncChangesIndex;
         }
         ctx.data.resolve(true);
     };
@@ -224,12 +246,17 @@ export class DocsCoApi extends SocketIoWrapper{
                     this.private_onSaveLock(null, msg);
                     break;
                 }
+                case `saveChanges`: {
+                    this.private_onSaveChanges(msg);
+                    break;
+                }
                 case `unSaveLock`: {
                     this.private_onUnSaveLock(null, msg);
                     break;
                 }
                 case 'drop':
                 case 'error':
+                case `savePartChanges`://todo large changes
                     let err = new Error(msg.type);
                     this.private_onAuth(err);
                     this.private_onDocumentOpen(err);
@@ -333,7 +360,7 @@ export class DocsCoApi extends SocketIoWrapper{
         this.private_setTimeout(`isSaveLock`, timeouts.timeoutReadTimeout, {resolve, reject, changes, timeouts}, (err) => {
             this.private_onSaveLock(err);
         });
-        this.private_send({"type":"isSaveLock"});
+        this.private_send({"type":"isSaveLock", "syncChangesIndex": this.syncChangesIndex});
     }
     private_saveChanges(resolve, reject, changes, timeouts) {
         this.private_setTimeout(`saveChanges`, timeouts.timeoutReadTimeout, {resolve, reject, changes, timeouts}, (err) => {

@@ -141,7 +141,7 @@ async function startTest(cfg, docsCoApi) {
                 startCloseSession = Date.now();
                 if (100 === closeSessionPercentPerMinute) {
                     break;
-                } else {
+                } else if (0 !== closeSessionPercentPerMinute) {
                     let curMinutesOfDay = getMinutesOfDay();
                     let docIdVPercent = docIdIndex % 100;
                     let left = (curMinutesOfDay * closeSessionPercentPerMinute) % 100;
