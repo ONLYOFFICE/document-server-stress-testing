@@ -146,7 +146,9 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         if(msg && msg.data && msg.data.data) {
             const url = msg.data.data["Editor.bin"];
-            http.get(url, {timeout: ctx.data.timeouts.timeoutDownload});
+            //every unique URL creates a new time-series object
+            //https://k6.io/docs/using-k6/http-requests/#url-grouping
+            http.get(url, {timeout: ctx.data.timeouts.timeoutDownload, tags: { name: 'Editor.bin' }});
             this.private_AuthCount(ctx);
         }
     };
