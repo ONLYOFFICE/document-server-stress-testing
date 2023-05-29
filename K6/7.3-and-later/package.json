@@ -1,0 +1,9 @@
+{
+  "name": "k6-stress-testing",
+  "version": "1.0.0",
+  "homepage": "https://www.onlyoffice.com",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/k6": "^0.44.1"
+  }
+}
