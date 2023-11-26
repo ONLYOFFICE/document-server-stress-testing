@@ -6,7 +6,7 @@
   "saveChangesThroughputPerMinute": 10,
   "closeSessionPercentPerMinute": 20,
   "documentUrl": "http://d2ettrnqo7v976.cloudfront.net/stress-test/jmeter-test.docx",
-  "changesPath": "dataset/7.4/changes.csv",
+  "changesPath": "dataset/7.5/changes.csv",
   "jwtSecret": "",
   "timeoutConnection": 20000,
   "timeoutAuth": 60000,
