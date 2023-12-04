@@ -41,6 +41,7 @@ const trends = {
     'connect': new Trend('custom_trend_connect', true),
     'auth': new Trend('custom_trend_auth', true),
     'convert': new Trend('custom_trend_convert', true),
+    'open': new Trend('custom_trend_open', true),
     'isSaveLock': new Trend('custom_trend_isSaveLock', true),
     'saveChanges': new Trend('custom_trend_saveChanges', true),
 };
@@ -48,6 +49,7 @@ const counter = {
     'connect': new Counter('custom_counter_exception_connect'),
     'auth': new Counter('custom_counter_exception_auth'),
     'convert': new Counter('custom_counter_exception_convert'),
+    'open': new Counter('custom_counter_exception_open'),
     'isSaveLock': new Counter('custom_counter_exception_isSaveLock'),
     'saveChanges': new Counter('custom_counter_exception_saveChanges'),
 }
@@ -103,6 +105,7 @@ export class DocsCoApi extends SocketIoWrapper{
     private_AuthCount(ctx) {
         ctx.data.authOperationCount++;
         if (ctx.data.authOperationCount >= 2) {
+            this.private_onOpen(null);
             this.syncChangesIndex = Math.max(this.authChangesIndex, this.syncChangesIndex);
             ctx.data.resolve();
         }
@@ -150,6 +153,17 @@ export class DocsCoApi extends SocketIoWrapper{
             //https://k6.io/docs/using-k6/http-requests/#url-grouping
             http.get(url, {timeout: ctx.data.timeouts.timeoutDownload, tags: { name: 'Editor.bin' }});
             this.private_AuthCount(ctx);
+        }
+    };
+    private_onOpen(err, msg) {
+        let name = 'open';
+        let ctx = this.private_clearTimeout(name);
+        if (!ctx) {
+            return;
+        }
+        if (err) {
+            counter[name].add(1);
+            return;
         }
     };
     private_onSaveLock(err, msg) {
@@ -207,6 +221,11 @@ export class DocsCoApi extends SocketIoWrapper{
     };
     private_open(docId, userId, jwtSecret, urls, timeouts, resolve, reject) {
         this.io = new SocketIoWrapper();
+
+        this.private_setTimeout(`open`, timeouts.timeoutConnection + timeouts.timeoutConvertion, null,
+            (err) => {
+                this.private_onOpen(err);
+        });
 
         this.private_setTimeout(`connect`, timeouts.timeoutConnection,
             {resolve, reject, docId, userId, jwtSecret, urls, timeouts},

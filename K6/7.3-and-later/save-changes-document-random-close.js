@@ -49,6 +49,7 @@ export const options = {
         custom_counter_exception_connect: ['count==0'],
         custom_counter_exception_auth: ['count==0'],
         custom_counter_exception_convert: ['count==0'],
+        custom_counter_exception_open: ['count==0'],
         custom_counter_exception_isSaveLock: ['count==0'],
         custom_counter_exception_saveChanges: ['count==0'],
     },
@@ -95,6 +96,7 @@ async function startTest(cfg, docsCoApi) {
         let saveChangesThroughputPerMinute = configFile.saveChangesThroughputPerMinute;
         let closeSessionPercentPerMinute = configFile.closeSessionPercentPerMinute;
         let documentUrl = configFile.documentUrl;
+        let callbackUrl = configFile.callbackUrl;
         let jwtSecret = configFile.jwtSecret;
         let timeoutConnection = configFile.timeoutConnection;
         let timeoutAuth = configFile.timeoutAuth;
@@ -115,7 +117,6 @@ async function startTest(cfg, docsCoApi) {
         let docId = `${cfg.docIdPrefix}_${minutesOfDay}_${docIdIndex}_${exec.vu.iterationInScenario}`;
         let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?EIO=4&transport=websocket`;
-        let callbackUrl  = '';
         let changes = changesArray[exec.vu.idInTest % changesArray.length];
         let saveDelay = 60000 / saveChangesThroughputPerMinute;
 
