@@ -116,7 +116,7 @@ async function startTest(cfg, docsCoApi) {
         }
         let docId = `${cfg.docIdPrefix}_${minutesOfDay}_${docIdIndex}_${exec.vu.iterationInScenario}`;
         let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
-        let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?EIO=4&transport=websocket`;
+        let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?WOPISrc=${docId}&EIO=4&transport=websocket`;
         let changes = changesArray[exec.vu.idInTest % changesArray.length];
         let saveDelay = 60000 / saveChangesThroughputPerMinute;
 

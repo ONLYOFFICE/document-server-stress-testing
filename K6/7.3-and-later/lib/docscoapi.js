@@ -286,7 +286,9 @@ export class DocsCoApi extends SocketIoWrapper{
                     break;
             }
         });
-        this.io.connect(urls.url, this.private_getOpenToken(docId, userId, jwtSecret, urls.documentUrl, urls.callbackUrl));
+        let token = this.private_getOpenToken(docId, userId, jwtSecret, urls.documentUrl, urls.callbackUrl)
+        let params = {tags: { name: 'socket.io' }};
+        this.io.connect(urls.url, token, params);
     };
     private_getOpenToken(docId, userId, jwtSecret, documentUrl, callbackUrl) {
         if (!jwtSecret) {

@@ -61,8 +61,8 @@ export class  SocketIoWrapper{
         this.token = null;
         this.callbacks = {};
     }
-    connect(url, token) {
-        this.ws = new WebSocket(url);
+    connect(url, token, params) {
+        this.ws = new WebSocket(url, null, params);
         this.token = token;
 
         this.ws.addEventListener('open', () => {
