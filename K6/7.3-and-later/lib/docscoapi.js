@@ -239,6 +239,7 @@ export class DocsCoApi extends SocketIoWrapper{
             this.private_onConect(err);
             this.private_onAuth(err);
             this.private_onDocumentOpen(err);
+            this.private_onOpen(err);
             this.private_onSaveLock(err);
             this.private_onUnSaveLock(err);
         });
@@ -281,6 +282,7 @@ export class DocsCoApi extends SocketIoWrapper{
                     let err = new Error(msg.type);
                     this.private_onAuth(err);
                     this.private_onDocumentOpen(err);
+                    this.private_onOpen(err);
                     this.private_onSaveLock(err);
                     this.private_onUnSaveLock(err);
                     break;
