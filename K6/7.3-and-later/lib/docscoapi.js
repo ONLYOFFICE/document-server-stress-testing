@@ -151,8 +151,17 @@ export class DocsCoApi extends SocketIoWrapper{
             const url = msg.data.data["Editor.bin"];
             //every unique URL creates a new time-series object
             //https://k6.io/docs/using-k6/http-requests/#url-grouping
-            http.get(url, {timeout: ctx.data.timeouts.timeoutDownload, tags: { name: 'Editor.bin' }});
-            this.private_AuthCount(ctx);
+            let getRes = http.get(url, {
+                timeout: ctx.data.timeouts.timeoutDownload,
+                tags: { name: 'Editor.bin' }
+            });
+            if (0 === getRes.error_code) {
+                this.private_AuthCount(ctx);
+            } else if (ctx.data.reject) {
+                //counter[name].add(1);
+                ctx.data.reject(new Error(getRes.error || `http.get response.error_code=${getRes.error_code}`));
+                ctx.data.reject = null;
+            }
         }
     };
     private_onOpen(err, msg) {

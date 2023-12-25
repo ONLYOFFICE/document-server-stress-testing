@@ -52,6 +52,7 @@ export const options = {
         custom_counter_exception_open: ['count==0'],
         custom_counter_exception_isSaveLock: ['count==0'],
         custom_counter_exception_saveChanges: ['count==0'],
+        http_req_failed: ['rate==0'],
     },
     scenarios: {
         contacts: {
