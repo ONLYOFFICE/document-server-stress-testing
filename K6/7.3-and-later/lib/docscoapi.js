@@ -159,7 +159,7 @@ export class DocsCoApi extends SocketIoWrapper{
                 this.private_AuthCount(ctx);
             } else if (ctx.data.reject) {
                 //counter[name].add(1);
-                ctx.data.reject(new Error(getRes.error || `http.get response.error_code=${getRes.error_code}`));
+                ctx.data.reject(new Error(getRes.error || `http.get Editor.bin response.error_code=${getRes.error_code}`));
                 ctx.data.reject = null;
             }
         }
@@ -229,6 +229,12 @@ export class DocsCoApi extends SocketIoWrapper{
         ctx.data.resolve(true);
     };
     private_open(docId, userId, jwtSecret, urls, timeouts, resolve, reject) {
+        let downloadErr = this.private_downloadStaticContent(urls.origin, timeouts.timeoutDownload)
+        if (downloadErr) {
+            reject(downloadErr);
+            return
+        }
+
         this.io = new SocketIoWrapper();
 
         this.private_setTimeout(`open`, timeouts.timeoutConnection + timeouts.timeoutConvertion, null,
@@ -301,6 +307,23 @@ export class DocsCoApi extends SocketIoWrapper{
         let params = {tags: { name: 'socket.io' }};
         this.io.connect(urls.url, token, params);
     };
+    private_downloadStaticContent(origin, timeout) {
+        //other static content is cached in browser
+        let downloadUrls = {
+            "api.js": `${origin}/web-apps/apps/api/documents/api.js`,
+            "index.html": `${origin}/web-apps/apps/documenteditor/main/index.html`,
+            "plugins.json": `${origin}/plugins.json`
+        }
+        for (let name in downloadUrls) {
+            let getRes = http.get(downloadUrls[name], {
+                timeout: timeout,
+                tags: { name: name }
+            });
+            if (0 !== getRes.error_code) {
+                return new Error(getRes.error || `http.get ${name} response.error_code=${getRes.error_code}`);
+            }
+        }
+    }
     private_getOpenToken(docId, userId, jwtSecret, documentUrl, callbackUrl) {
         if (!jwtSecret) {
             return null;

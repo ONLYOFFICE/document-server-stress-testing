@@ -53,6 +53,10 @@ export const options = {
         custom_counter_exception_isSaveLock: ['count==0'],
         custom_counter_exception_saveChanges: ['count==0'],
         http_req_failed: ['rate==0'],
+        'http_req_failed{name:Editor.bin}': ['rate==0'],
+        'http_req_failed{name:api.js}': ['rate==0'],
+        'http_req_failed{name:index.html}': ['rate==0'],
+        'http_req_failed{name:plugins.json}': ['rate==0'],
     },
     scenarios: {
         contacts: {
@@ -118,10 +122,11 @@ async function startTest(cfg, docsCoApi) {
         let docId = `${cfg.docIdPrefix}_${minutesOfDay}_${docIdIndex}_${exec.vu.iterationInScenario}`;
         let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/?WOPISrc=${docId}&EIO=4&transport=websocket`;
+        let origin  = `http${serverProtoSuffix}://${serverNameOrIp}:${serverPort}`;
         let changes = changesArray[exec.vu.idInTest % changesArray.length];
         let saveDelay = 60000 / saveChangesThroughputPerMinute;
 
-        await docsCoApi.open(docId, userId, jwtSecret, {url, documentUrl, callbackUrl}, {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload});
+        await docsCoApi.open(docId, userId, jwtSecret, {url, documentUrl, callbackUrl, origin}, {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload});
         let startCloseSession = Date.now();
         while (true) {
             let startSaveChanges = Date.now();
