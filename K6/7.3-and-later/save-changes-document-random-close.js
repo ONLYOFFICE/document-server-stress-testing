@@ -100,9 +100,12 @@ async function startTest(cfg, docsCoApi) {
         let coeditorsCount = configFile.coeditorsCount;
         let saveChangesThroughputPerMinute = configFile.saveChangesThroughputPerMinute;
         let closeSessionPercentPerMinute = configFile.closeSessionPercentPerMinute;
-        let documentUrl = configFile.documentUrl;
-        let callbackUrl = configFile.callbackUrl;
-        let jwtSecret = configFile.jwtSecret;
+        let docsApiEnable = configFile.docsApi.enable;
+        let documentUrl = configFile.docsApi.documentUrl;
+        let callbackUrl = configFile.docsApi.callbackUrl;
+        let jwtSecret = configFile.docsApi.jwtSecret;
+        let wopiEnable = configFile.wopi.enable;
+        let wopiHost = configFile.wopi.wopiHost;
         let timeoutConnection = configFile.timeoutConnection;
         let timeoutAuth = configFile.timeoutAuth;
         let timeoutDownload = configFile.timeoutDownload;
@@ -126,7 +129,18 @@ async function startTest(cfg, docsCoApi) {
         let changes = changesArray[exec.vu.idInTest % changesArray.length];
         let saveDelay = 60000 / saveChangesThroughputPerMinute;
 
-        await docsCoApi.open(docId, userId, jwtSecret, {url, documentUrl, callbackUrl, origin}, {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload});
+        let urls = {url, documentUrl, callbackUrl, origin};
+        let timeouts = {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload};
+        if (docsApiEnable) {
+            await docsCoApi.open(docId, userId, jwtSecret, urls, timeouts);
+        } else if (wopiEnable){
+            await docsCoApi.openWithWOPI( wopiHost, docId, userId, urls, timeouts);
+        } else {
+            CounterExceptions.add(1);
+            console.error(`invalid config VU-${exec.vu.idInTest}:`, err, err.stack);
+            return;
+        }
+
         let startCloseSession = Date.now();
         while (true) {
             let startSaveChanges = Date.now();

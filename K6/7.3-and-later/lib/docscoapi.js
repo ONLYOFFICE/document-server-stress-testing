@@ -33,7 +33,9 @@
 import http from 'k6/http';
 import { Trend, Counter } from 'k6/metrics';
 import exec from 'k6/execution';
+import encoding from 'k6/encoding';
 import { setTimeout, clearTimeout} from 'k6/experimental/timers';
+import { FormData } from 'https://jslib.k6.io/formdata/0.0.2/index.js';
 import { SocketIoWrapper } from './socket.io.js';
 import { encode as jwtEncode} from './jwt.js';
 
@@ -64,8 +66,14 @@ export class DocsCoApi extends SocketIoWrapper{
     }
     open(docId, userId, jwtSecret, urls, timeouts) {
         return new Promise((resolve, reject) => {
-            this.private_open(docId, userId, jwtSecret, urls, timeouts, resolve, reject);
+            let token = this.private_getOpenToken(docId, userId, jwtSecret, urls.documentUrl, urls.callbackUrl);
+            this.private_open(docId, userId, token, urls, timeouts, resolve, reject);
         });
+    }
+    openWithWOPI(wopiHost, docId, userId, urls, timeouts) {
+        return new Promise((resolve, reject) => {
+            this.private_openWithWOPI(wopiHost, docId, userId, urls, timeouts, resolve, reject);
+        })
     }
     saveChanges(changes, timeouts) {
         return new Promise((resolve, reject) => {
@@ -100,7 +108,7 @@ export class DocsCoApi extends SocketIoWrapper{
         this.private_setTimeout(`convert`,timeouts.timeoutConvertion, ctx.data, (err) => {
             this.private_onDocumentOpen(err);
         });
-        this.private_auth(ctx.data.docId, ctx.data.userId , ctx.data.jwtSecret, ctx.data.urls.documentUrl, ctx.data.urls.callbackUrl);
+        this.private_auth(ctx.data.docId, ctx.data.userId , ctx.data.token, ctx.data.urls.documentUrl, ctx.data.urls.callbackUrl);
     };
     private_AuthCount(ctx) {
         ctx.data.authOperationCount++;
@@ -228,7 +236,49 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         ctx.data.resolve(true);
     };
-    private_open(docId, userId, jwtSecret, urls, timeouts, resolve, reject) {
+    private_openWithWOPI(wopiHost, docId, userId, urls, timeouts, resolve, reject) {
+        const urlDiscovery = `${urls.origin}/hosting/discovery`;
+        console.debug(`wopi: request discovery: ${urlDiscovery}`);
+        let discoveryRes = http.get(urlDiscovery, {
+            responseType: "text",
+            timeout: timeouts.timeoutDownload,
+            tags: {name: 'discovery'}
+        });
+        if (!discoveryRes.body) {
+            reject(new Error(`wopi: discovery has no body urlDiscovery=${urlDiscovery}`))
+            return;
+        }
+        let wopiSrcTemplate = this.private_wopiGetActionUrl(discoveryRes.body, 'edit', 'docx');
+        console.debug(`wopi: request wopiSrcTemplate: ${wopiSrcTemplate}`);
+        if (!wopiSrcTemplate) {
+            reject(new Error(`wopi: wopiSrcTemplate is empty`))
+            return;
+        }
+        let {actionUrl, access_token, access_token_ttl} = this.private_wopiGetFormParams(wopiSrcTemplate, wopiHost, docId, userId);
+        const fd = new FormData();
+        fd.append('access_token', access_token);
+        fd.append('access_token_ttl', access_token_ttl.toString());
+
+        const htmlRes = http.post(actionUrl, fd.body(), {
+            responseType: "text",
+            headers: {'Content-Type': 'multipart/form-data; boundary=' + fd.boundary},
+            timeout: timeouts.timeoutDownload,
+            tags: {name: 'action'}
+        });
+        if (!htmlRes.body) {
+            reject(new Error(`wopi: edit html has no body`))
+            return;
+        }
+        let htmlResParsed = this.private_wopiParseHtmlResponse(htmlRes.body);
+        console.debug(`wopi: html htmlResParsed=${JSON.stringify(htmlResParsed)}`);
+        if (!htmlResParsed.docId || !htmlResParsed.userId || !htmlResParsed.token) {
+            reject(new Error(`wopi: edit html has no required params htmlResParsed=${JSON.stringify(htmlResParsed)}`))
+            return;
+        }
+        //use userId from params to allow cache checkFileInfo request
+        this.private_open(htmlResParsed.docId, userId || htmlResParsed.userId, htmlResParsed.token, urls, timeouts, resolve, reject);
+    }
+    private_open(docId, userId, token, urls, timeouts, resolve, reject) {
         let downloadErr = this.private_downloadStaticContent(urls.origin, timeouts.timeoutDownload)
         if (downloadErr) {
             reject(downloadErr);
@@ -243,7 +293,7 @@ export class DocsCoApi extends SocketIoWrapper{
         });
 
         this.private_setTimeout(`connect`, timeouts.timeoutConnection,
-            {resolve, reject, docId, userId, jwtSecret, urls, timeouts},
+            {resolve, reject, docId, userId, token, urls, timeouts},
             (err) => {
             this.private_onConect(err);
         });
@@ -303,7 +353,6 @@ export class DocsCoApi extends SocketIoWrapper{
                     break;
             }
         });
-        let token = this.private_getOpenToken(docId, userId, jwtSecret, urls.documentUrl, urls.callbackUrl)
         let params = {tags: { name: 'socket.io' }};
         this.io.connect(urls.url, token, params);
     };
@@ -326,7 +375,7 @@ export class DocsCoApi extends SocketIoWrapper{
     }
     private_getOpenToken(docId, userId, jwtSecret, documentUrl, callbackUrl) {
         if (!jwtSecret) {
-            return null;
+            return "";
         }
         let data = {
             document: {
@@ -358,7 +407,7 @@ export class DocsCoApi extends SocketIoWrapper{
         };
         return jwtEncode(data, jwtSecret);
     }
-    private_auth(docId, userId, jwtSecret, documentUrl, callbackUrl) {
+    private_auth(docId, userId, token, documentUrl, callbackUrl) {
         let data = {
             "type": "auth",
             "docid": `${docId}`,
@@ -405,12 +454,9 @@ export class DocsCoApi extends SocketIoWrapper{
             "IsAnonymousUser": false,
             "timezoneOffset": -180,
             "coEditingMode": "fast",
-            "jwtOpen": "",
+            "jwtOpen": token,
             "supportAuthChangesAck": true
         };
-        if (jwtSecret) {
-            data.jwtOpen = this.private_getOpenToken(docId, userId, jwtSecret, documentUrl, callbackUrl);
-        }
         this.private_send(data);
     }
     private_isSaveLock(resolve, reject, changes, timeouts) {
@@ -467,5 +513,59 @@ export class DocsCoApi extends SocketIoWrapper{
                 delete this.timeoutContext[name];
             }
         }
+    }
+
+    private_wopiGetActionUrl(discovery, action, ext) {
+        let regexp = new RegExp(`name="${action}".*?ext="${ext}".*?urlsrc="(.*?)"`)
+        let res = discovery.match(regexp);
+        return res && res[1];
+    }
+    private_wopiGetFormParams(wopiSrcTemplate, wopiHost, docId, userId) {
+        let wopiSrc = `${wopiHost}/wopi/files/${docId}`
+        let actionUrl = `${wopiSrcTemplate.split('?')[0]}?WOPISrc=${encodeURIComponent(wopiSrc)}`;
+        let access_token = encoding.b64encode(JSON.stringify({
+            BaseFileName: "sample.docx",
+            OwnerId: userId,
+            Size: 100,//no need to set actual size
+            UserId: userId,
+            UserFriendlyName: "user",
+            Version: 0,
+            UserCanWrite: true,
+            SupportsGetLock: true,
+            SupportsLocks: true,
+            SupportsUpdate: true,
+        }))
+        let access_token_ttl = (Date.now() + 1000 * 60 * 60 * 24);//1 day
+        return {actionUrl, access_token, access_token_ttl};
+    }
+    private_wopiParseHtmlResponse(html) {
+        //From web-apps/apps/api/wopi/editor-wopi.ejs
+        //
+        // fileInfo = <%- JSON.stringify(fileInfo) %>;
+        //
+        // var key = "<%- key %>";
+        // var documentType = "<%- documentType %>";
+        // var userAuth = <%- JSON.stringify(userAuth) %>;
+        // var token = "<%- token %>";
+        let regexp, res, userId, docId, token
+        regexp = new RegExp(`fileInfo = (.*);`)
+        res = html.match(regexp);
+        if (res && res[1]) {
+            let fileInfo = JSON.parse(res && res[1]);
+            userId = fileInfo.UserId;
+        }
+
+        regexp = new RegExp(`key = "(.*)";`)
+        res = html.match(regexp);
+        if (res && res[1]) {
+            docId = res && res[1];
+        }
+
+        regexp = new RegExp(`token = "(.*)";`)
+        res = html.match(regexp);
+        if (res && res[1]) {
+            token = res && res[1];
+        }
+        return {docId, userId, token};
     }
 }

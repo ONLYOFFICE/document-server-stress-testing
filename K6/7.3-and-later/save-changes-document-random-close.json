@@ -5,10 +5,17 @@
   "coeditorsCount": 1,
   "saveChangesThroughputPerMinute": 10,
   "closeSessionPercentPerMinute": 20,
-  "documentUrl": "https://example.com/url-to-example-document",
-  "callbackUrl": "https://example.com/url-to-callback",
+  "docsApi" : {
+    "enable": true,
+    "documentUrl": "https://example.com/url-to-example-document",
+    "callbackUrl": "https://example.com/url-to-callback",
+    "jwtSecret": ""
+  },
+  "wopi": {
+    "enable": false,
+    "wopiHost": "https://example.com"
+  },
   "changesPath": "dataset/7.5/changes.csv",
-  "jwtSecret": "",
   "timeoutConnection": 20000,
   "timeoutAuth": 60000,
   "timeoutDownload": 10000,
