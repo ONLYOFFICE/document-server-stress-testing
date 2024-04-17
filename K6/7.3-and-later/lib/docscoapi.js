@@ -70,10 +70,13 @@ export class DocsCoApi extends SocketIoWrapper{
             this.private_open(docId, userId, token, urls, timeouts, resolve, reject);
         });
     }
-    openWithWOPI(wopiHost, docId, userId, urls, timeouts) {
+    openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts) {
         return new Promise((resolve, reject) => {
-            this.private_openWithWOPI(wopiHost, docId, userId, urls, timeouts, resolve, reject);
+            this.private_openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, resolve, reject);
         })
+    }
+    async getWopiSrcTemplate(origin, timeoutDownload) {
+        return this.private_getWopiSrcTemplate(origin, timeoutDownload);
     }
     saveChanges(changes, timeouts) {
         return new Promise((resolve, reject) => {
@@ -236,24 +239,25 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         ctx.data.resolve(true);
     };
-    private_openWithWOPI(wopiHost, docId, userId, urls, timeouts, resolve, reject) {
-        const urlDiscovery = `${urls.origin}/hosting/discovery`;
+    async private_getWopiSrcTemplate(origin, timeoutDownload) {
+        const urlDiscovery = `${origin}/hosting/discovery`;
         console.debug(`wopi: request discovery: ${urlDiscovery}`);
         let discoveryRes = http.get(urlDiscovery, {
             responseType: "text",
-            timeout: timeouts.timeoutDownload,
+            timeout: timeoutDownload,
             tags: {name: 'discovery'}
         });
         if (!discoveryRes.body) {
-            reject(new Error(`wopi: discovery has no body urlDiscovery=${urlDiscovery}`))
-            return;
+            throw new Error(`wopi: discovery has no body urlDiscovery=${urlDiscovery}`);
         }
         let wopiSrcTemplate = this.private_wopiGetActionUrl(discoveryRes.body, 'edit', 'docx');
         console.debug(`wopi: request wopiSrcTemplate: ${wopiSrcTemplate}`);
         if (!wopiSrcTemplate) {
-            reject(new Error(`wopi: wopiSrcTemplate is empty`))
-            return;
+            throw new Error(`wopi: wopiSrcTemplate is empty`);
         }
+        return wopiSrcTemplate;
+    }
+    private_openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, resolve, reject) {
         let {actionUrl, access_token, access_token_ttl} = this.private_wopiGetFormParams(wopiSrcTemplate, wopiHost, docId, userId);
         const fd = new FormData();
         fd.append('access_token', access_token);

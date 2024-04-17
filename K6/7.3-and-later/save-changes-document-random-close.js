@@ -74,10 +74,19 @@ const changesArray = new SharedArray('changes', function () {
     return file.split('\n').map((line) => line.replace(/\\/g, ''));
 });
 
-export function setup() {
+export async function setup() {
+    let wopiSrcTemplate;
     let docIdPrefix = 'k6_' + randomString(10);
     console.info(`docIdPrefix: ${docIdPrefix} start time: ${new Date().toISOString()}`);
-    return { docIdPrefix };
+    if (configFile.wopi.enable) {
+        let serverProtoSuffix = configFile.serverProtoSuffix;
+        let serverNameOrIp = configFile.serverNameOrIp;
+        let serverPort = configFile.serverPort;
+        let origin  = `http${serverProtoSuffix}://${serverNameOrIp}:${serverPort}`;
+        let timeoutDownload = configFile.timeoutDownload;
+        wopiSrcTemplate = await docsCoApi.getWopiSrcTemplate(origin, timeoutDownload);
+    }
+    return { docIdPrefix, wopiSrcTemplate };
 }
 
 const docsCoApi = new DocsCoApi();
@@ -134,7 +143,7 @@ async function startTest(cfg, docsCoApi) {
         if (docsApiEnable) {
             await docsCoApi.open(docId, userId, jwtSecret, urls, timeouts);
         } else if (wopiEnable){
-            await docsCoApi.openWithWOPI( wopiHost, docId, userId, urls, timeouts);
+            await docsCoApi.openWithWOPI( cfg.wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts);
         } else {
             CounterExceptions.add(1);
             console.error(`invalid config VU-${exec.vu.idInTest}:`, err, err.stack);
