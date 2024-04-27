@@ -67,7 +67,7 @@ export class DocsCoApi extends SocketIoWrapper{
     open(docId, userId, jwtSecret, urls, timeouts) {
         return new Promise((resolve, reject) => {
             let token = this.private_getOpenToken(docId, userId, jwtSecret, urls.documentUrl, urls.callbackUrl);
-            this.private_open(docId, userId, token, urls, timeouts, resolve, reject);
+            this.private_open(docId, userId, token, null, urls, timeouts, resolve, reject);
         });
     }
     openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts) {
@@ -258,7 +258,7 @@ export class DocsCoApi extends SocketIoWrapper{
         return wopiSrcTemplate;
     }
     private_openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, resolve, reject) {
-        let {actionUrl, access_token, access_token_ttl} = this.private_wopiGetFormParams(wopiSrcTemplate, wopiHost, docId, userId);
+        let {actionUrl, access_token, access_token_ttl, wopiSrc} = this.private_wopiGetFormParams(wopiSrcTemplate, wopiHost, docId, userId);
         const fd = new FormData();
         fd.append('access_token', access_token);
         fd.append('access_token_ttl', access_token_ttl.toString());
@@ -280,9 +280,9 @@ export class DocsCoApi extends SocketIoWrapper{
             return;
         }
         //use userId from params to allow cache checkFileInfo request
-        this.private_open(htmlResParsed.docId, userId || htmlResParsed.userId, htmlResParsed.token, urls, timeouts, resolve, reject);
+        this.private_open(htmlResParsed.docId, userId || htmlResParsed.userId, htmlResParsed.token, wopiSrc, urls, timeouts, resolve, reject);
     }
-    private_open(docId, userId, token, urls, timeouts, resolve, reject) {
+    private_open(docId, userId, token, wopiSrc, urls, timeouts, resolve, reject) {
         let downloadErr = this.private_downloadStaticContent(urls.origin, timeouts.timeoutDownload)
         if (downloadErr) {
             reject(downloadErr);
@@ -358,7 +358,13 @@ export class DocsCoApi extends SocketIoWrapper{
             }
         });
         let params = {tags: { name: 'socket.io' }};
-        this.io.connect(urls.url, token, params);
+        let url;
+        if (wopiSrc) {
+            url = `${urls.url}?WOPISrc=${encodeURIComponent(wopiSrc)}&EIO=4&transport=websocket`;
+        } else {
+            url = `${urls.url}?shardkey=${encodeURIComponent(docId)}&EIO=4&transport=websocket`;
+        }
+        this.io.connect(url, token, params);
     };
     private_downloadStaticContent(origin, timeout) {
         //other static content is cached in browser
@@ -540,7 +546,7 @@ export class DocsCoApi extends SocketIoWrapper{
             SupportsUpdate: true,
         }))
         let access_token_ttl = (Date.now() + 1000 * 60 * 60 * 24);//1 day
-        return {actionUrl, access_token, access_token_ttl};
+        return {actionUrl, access_token, access_token_ttl, wopiSrc};
     }
     private_wopiParseHtmlResponse(html) {
         //From web-apps/apps/api/wopi/editor-wopi.ejs
