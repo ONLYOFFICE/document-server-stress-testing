@@ -275,10 +275,11 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         let htmlResParsed = this.private_wopiParseHtmlResponse(htmlRes.body);
         console.debug(`wopi: html htmlResParsed=${JSON.stringify(htmlResParsed)}`);
-        if (!htmlResParsed.docId || !htmlResParsed.userId) {
+        if (!htmlResParsed.docId || !htmlResParsed.userId || !htmlResParsed.userAuth) {
             reject(new Error(`wopi: edit html has no required params htmlResParsed=${JSON.stringify(htmlResParsed)}`))
             return;
         }
+        urls.callbackUrl = JSON.stringify(htmlResParsed.userAuth);
         //use userId from params to allow cache checkFileInfo request
         this.private_open(htmlResParsed.docId, userId || htmlResParsed.userId, htmlResParsed.token, wopiSrc, urls, timeouts, resolve, reject);
     }
@@ -362,7 +363,7 @@ export class DocsCoApi extends SocketIoWrapper{
         if (wopiSrc) {
             url = `${urls.url}?WOPISrc=${encodeURIComponent(wopiSrc)}&EIO=4&transport=websocket`;
         } else {
-            url = `${urls.url}?shardkey=${encodeURIComponent(docId)}&EIO=4&transport=websocket`;
+            url = `${urls.url}?WOPISrc=${encodeURIComponent(docId)}&EIO=4&transport=websocket`;
         }
         this.io.connect(url, token, params);
     };
@@ -557,7 +558,7 @@ export class DocsCoApi extends SocketIoWrapper{
         // var documentType = "<%- documentType %>";
         // var userAuth = <%- JSON.stringify(userAuth) %>;
         // var token = "<%- token %>";
-        let regexp, res, userId, docId, token
+        let regexp, res, userId, docId, token, userAuth;
         regexp = new RegExp(`fileInfo = (.*);`)
         res = html.match(regexp);
         if (res && res[1]) {
@@ -576,6 +577,12 @@ export class DocsCoApi extends SocketIoWrapper{
         if (res && res[1]) {
             token = res && res[1];
         }
-        return {docId, userId, token};
+
+        regexp = new RegExp(`userAuth = (.*);`)
+        res = html.match(regexp);
+        if (res && res[1]) {
+            userAuth = JSON.parse(res && res[1]);
+        }
+        return {docId, userId, token, userAuth};
     }
 }
