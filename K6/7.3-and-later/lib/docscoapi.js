@@ -275,7 +275,7 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         let htmlResParsed = this.private_wopiParseHtmlResponse(htmlRes.body);
         console.debug(`wopi: html htmlResParsed=${JSON.stringify(htmlResParsed)}`);
-        if (!htmlResParsed.docId || !htmlResParsed.userId || !htmlResParsed.token) {
+        if (!htmlResParsed.docId || !htmlResParsed.userId) {
             reject(new Error(`wopi: edit html has no required params htmlResParsed=${JSON.stringify(htmlResParsed)}`))
             return;
         }
