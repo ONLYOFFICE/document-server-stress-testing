@@ -122,6 +122,7 @@ async function startTest(cfg, docsCoApi) {
         let timeoutReadTimeout = configFile.timeoutReadTimeout;
         let timeoutSaveLock = configFile.timeoutSaveLock;
         let timeoutSaveLockRandom = configFile.timeoutSaveLockRandom;
+        let downloadStaticContent = configFile.downloadStaticContent;
 
         //add minutesOfDay to docId to avoid collisions with coediting saved file
         let minutesOfDay = getMinutesOfDay();
@@ -141,9 +142,9 @@ async function startTest(cfg, docsCoApi) {
         let urls = {url, documentUrl, callbackUrl, origin};
         let timeouts = {timeoutConnection, timeoutAuth, timeoutConvertion, timeoutDownload};
         if (docsApiEnable) {
-            await docsCoApi.open(docId, userId, jwtSecret, urls, timeouts);
+            await docsCoApi.open(docId, userId, jwtSecret, urls, timeouts, downloadStaticContent);
         } else if (wopiEnable){
-            await docsCoApi.openWithWOPI( cfg.wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts);
+            await docsCoApi.openWithWOPI( cfg.wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, downloadStaticContent);
         } else {
             CounterExceptions.add(1);
             console.error(`invalid config VU-${exec.vu.idInTest}:`, err, err.stack);

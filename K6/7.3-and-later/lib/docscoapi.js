@@ -64,15 +64,15 @@ export class DocsCoApi extends SocketIoWrapper{
         this.syncChangesIndex = 0;
         this.authChangesIndex = 0;
     }
-    open(docId, userId, jwtSecret, urls, timeouts) {
+    open(docId, userId, jwtSecret, urls, timeouts, downloadStaticContent) {
         return new Promise((resolve, reject) => {
             let token = this.private_getOpenToken(docId, userId, jwtSecret, urls.documentUrl, urls.callbackUrl);
-            this.private_open(docId, userId, token, null, urls, timeouts, resolve, reject);
+            this.private_open(docId, userId, token, null, urls, timeouts, downloadStaticContent, resolve, reject);
         });
     }
-    openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts) {
+    openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, downloadStaticContent) {
         return new Promise((resolve, reject) => {
-            this.private_openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, resolve, reject);
+            this.private_openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, downloadStaticContent, resolve, reject);
         })
     }
     async getWopiSrcTemplate(origin, timeoutDownload) {
@@ -257,7 +257,7 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         return wopiSrcTemplate;
     }
-    private_openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, resolve, reject) {
+    private_openWithWOPI(wopiSrcTemplate, wopiHost, docId, userId, urls, timeouts, downloadStaticContent, resolve, reject) {
         let {actionUrl, access_token, access_token_ttl, wopiSrc} = this.private_wopiGetFormParams(wopiSrcTemplate, wopiHost, docId, userId);
         const fd = new FormData();
         fd.append('access_token', access_token);
@@ -281,10 +281,10 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         urls.callbackUrl = JSON.stringify(htmlResParsed.userAuth);
         //use userId from params to allow cache checkFileInfo request
-        this.private_open(htmlResParsed.docId, userId || htmlResParsed.userId, htmlResParsed.token, wopiSrc, urls, timeouts, resolve, reject);
+        this.private_open(htmlResParsed.docId, userId || htmlResParsed.userId, htmlResParsed.token, wopiSrc, urls, timeouts, downloadStaticContent, resolve, reject);
     }
-    private_open(docId, userId, token, wopiSrc, urls, timeouts, resolve, reject) {
-        let downloadErr = this.private_downloadStaticContent(urls.origin, timeouts.timeoutDownload)
+    private_open(docId, userId, token, wopiSrc, urls, timeouts, downloadStaticContent, resolve, reject) {
+        let downloadErr = this.private_downloadStaticContent(urls.origin, timeouts.timeoutDownload, downloadStaticContent)
         if (downloadErr) {
             reject(downloadErr);
             return
@@ -367,15 +367,11 @@ export class DocsCoApi extends SocketIoWrapper{
         }
         this.io.connect(url, token, params);
     };
-    private_downloadStaticContent(origin, timeout) {
+    private_downloadStaticContent(origin, timeout, downloadStaticContent) {
         //other static content is cached in browser
-        let downloadUrls = {
-            "api.js": `${origin}/web-apps/apps/api/documents/api.js`,
-            "index.html": `${origin}/web-apps/apps/documenteditor/main/index.html`,
-            "plugins.json": `${origin}/plugins.json`
-        }
-        for (let name in downloadUrls) {
-            let getRes = http.get(downloadUrls[name], {
+        for (let name in downloadStaticContent) {
+            let url = `${origin}${downloadStaticContent[name]}`;
+            let getRes = http.get(url, {
                 timeout: timeout,
                 tags: { name: name }
             });

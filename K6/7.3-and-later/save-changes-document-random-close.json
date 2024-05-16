@@ -16,6 +16,11 @@
     "wopiHost": "https://example.com"
   },
   "changesPath": "dataset/7.5/changes.csv",
+  "downloadStaticContent": {
+    "api.js": "/web-apps/apps/api/documents/api.js",
+    "index.html": "/web-apps/apps/documenteditor/main/index.html",
+    "plugins.json": "/plugins.json"
+  },
   "timeoutConnection": 20000,
   "timeoutAuth": 60000,
   "timeoutDownload": 10000,
