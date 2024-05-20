@@ -40,7 +40,7 @@ import {DocsCoApi} from "./lib/docscoapi.js";
 const CounterExceptions = new Counter('custom_counter_exception_all');
 const CounterManualClose = new Counter('custom_counter_manual_close');
 
-export const options = {
+let defaultOptions = {
     summaryTimeUnit: 'ms',
     discardResponseBodies: true,
     summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'count'],
@@ -54,9 +54,6 @@ export const options = {
         custom_counter_exception_saveChanges: ['count==0'],
         http_req_failed: ['rate==0'],
         'http_req_failed{name:Editor.bin}': ['rate==0'],
-        'http_req_failed{name:api.js}': ['rate==0'],
-        'http_req_failed{name:index.html}': ['rate==0'],
-        'http_req_failed{name:plugins.json}': ['rate==0'],
     },
     scenarios: {
         contacts: {
@@ -68,6 +65,11 @@ export const options = {
 };
 
 const configFile = JSON.parse(open('./save-changes-document-random-close.json'));
+for (let elem in configFile.downloadStaticContent) {
+    defaultOptions.thresholds[`http_req_failed{name:${elem}}`] = ['rate==0'];
+}
+
+export const options = defaultOptions;
 
 const changesArray = new SharedArray('changes', function () {
     const file = open(configFile.changesPath);

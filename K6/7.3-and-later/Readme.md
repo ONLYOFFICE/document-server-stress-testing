@@ -35,6 +35,7 @@ This document describes how to run stress testing of [ONLYOFFICE Document Server
 - `wopi.wopiHost`: host that support CheckFileInfo, Lock, Unlock, GetFile, PutFile operations.
 docserver with `wopi.dummy.enable=true` is fine.
 - `changesPath`:  path to the document with changes.
+- `downloadStaticContent`:  map of static files to download before connecting to websocket.
 - `timeoutConnection`:  connect timeout (ms) for all requests.
 - `timeoutAuth`:  Response (read) timeout (ms) for "auth".
 - `timeoutDownload`:  Response (read) timeout (ms) for Editor.bin download.
