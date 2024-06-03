@@ -15,7 +15,7 @@
     "enable": false,
     "wopiHost": "https://example.com"
   },
-  "changesPath": "dataset/7.5/changes.csv",
+  "changesPath": "dataset/8.1/changes.csv",
   "downloadStaticContent": {
     "api.js": "/web-apps/apps/api/documents/api.js",
     "index.html": "/web-apps/apps/documenteditor/main/index.html",
