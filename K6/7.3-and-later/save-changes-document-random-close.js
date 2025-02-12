@@ -153,17 +153,18 @@ async function startTest(cfg, docsCoApi) {
         }
 
         let startCloseSession = Date.now();
+        let endSaveChanges = Date.now();
         while (true) {
-            let startSaveChanges = Date.now();
-            let saveRes = await docsCoApi.saveChanges(changes, {timeoutReadTimeout});
-            let endSaveChanges = Date.now();
-            if (saveRes) {
-                if (endSaveChanges - startSaveChanges < saveDelay) {
-                    //saveChangesThroughputPerMinute
-                    await sleepPromise(saveDelay - (endSaveChanges - startSaveChanges));
+            //saveChangesThroughputPerMinute
+            let saveRes = false;
+            if (saveDelay <= Date.now() - endSaveChanges) {
+                let saveRes = await docsCoApi.saveChanges(changes, {timeoutReadTimeout});
+                if (saveRes) {
+                    endSaveChanges = Date.now();
                 }
-            } else {
-                //save is locked. wait random time
+            }
+            if (!saveRes) {
+                // save is locked or saveDelay is not passed. wait random time
                 let lockDelay = timeoutSaveLock + Math.floor(Math.random() * timeoutSaveLockRandom);
                 await sleepPromise(lockDelay);
             }
