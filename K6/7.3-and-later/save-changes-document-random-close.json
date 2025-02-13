@@ -3,7 +3,7 @@
   "serverNameOrIp": "localhost",
   "serverPort": 80,
   "coeditorsCount": 1,
-  "saveChangesThroughputPerMinute": 10,
+  "persistentDocId": "",
   "closeSessionPercentPerMinute": 20,
   "docsApi" : {
     "enable": true,

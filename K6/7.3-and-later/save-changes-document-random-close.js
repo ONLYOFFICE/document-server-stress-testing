@@ -124,6 +124,7 @@ async function startTest(cfg, docsCoApi) {
         let timeoutSaveLock = configFile.timeoutSaveLock;
         let timeoutSaveLockRandom = configFile.timeoutSaveLockRandom;
         let downloadStaticContent = configFile.downloadStaticContent;
+        let persistentDocId = configFile.persistentDocId;
 
         //add minutesOfDay to docId to avoid collisions with coediting saved file
         let minutesOfDay = getMinutesOfDay();
@@ -133,7 +134,7 @@ async function startTest(cfg, docsCoApi) {
         } else {
             docIdIndex = exec.vu.idInTest;
         }
-        let docId = `${cfg.docIdPrefix}_${minutesOfDay}_${docIdIndex}_${exec.vu.iterationInScenario}`;
+        let docId = persistentDocId || `${cfg.docIdPrefix}_${minutesOfDay}_${docIdIndex}_${exec.vu.iterationInScenario}`;
         let userId = `uid-${exec.vu.idInTest}-${exec.vu.iterationInScenario}-`;
         let url  = `ws${serverProtoSuffix}://${serverNameOrIp}:${serverPort}/doc/${docId}/c/`;
         let origin  = `http${serverProtoSuffix}://${serverNameOrIp}:${serverPort}`;
