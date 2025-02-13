@@ -4,6 +4,7 @@
   "serverPort": 80,
   "coeditorsCount": 1,
   "persistentDocId": "",
+  "saveChangesThroughputPerMinute": 10,
   "closeSessionPercentPerMinute": 20,
   "docsApi" : {
     "enable": true,
