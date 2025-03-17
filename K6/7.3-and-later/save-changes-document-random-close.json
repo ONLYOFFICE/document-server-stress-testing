@@ -5,7 +5,7 @@
   "coeditorsCount": 1,
   "persistentDocId": "",
   "saveChangesThroughputPerMinute": 10,
-  "closeSessionPercentPerMinute": 20,
+  "closeSessionPercentPerMinute": 4,
   "docsApi" : {
     "enable": true,
     "documentUrl": "https://example.com/url-to-example-document",
