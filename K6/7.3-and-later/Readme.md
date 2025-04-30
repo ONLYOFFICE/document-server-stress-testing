@@ -29,7 +29,7 @@ This document describes how to run stress testing of [ONLYOFFICE Document Server
 - `closeSessionPercentPerMinute`: Percentage of threads closing per minute
 - `docsApi.enable`: open document with docsApi protocol
 - `docsApi.documentUrl`:  URL to the document.
-- `docsApi.callbackUrl`:  handler that returns `{"error": 0}` on a GET request. `dummyCallback` from docserver is fine.
+- `docsApi.callbackUrl`:  handler that returns `{"error": 0}` on a POST request. `dummyCallback` from docserver is fine.
 - `docsApi.jwtSecret`: secret from `services.CoAuthoring.secret.inbox.string` or empty if jwt is turned off
 - `wopi.enable`: open document with WOPI protocol
 - `wopi.wopiHost`: host that support CheckFileInfo, Lock, Unlock, GetFile, PutFile operations.
