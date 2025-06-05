@@ -250,9 +250,9 @@ export class DocsCoApi extends SocketIoWrapper{
             throw new Error(`wopi: discovery has no body urlDiscovery=${urlDiscovery}`);
         }
         let wopiSrcTemplate = this.private_wopiGetActionUrl(discoveryRes.body, 'edit', 'docx');
-        console.debug(`wopi: request wopiSrcTemplate: ${wopiSrcTemplate}`);
+        console.debug(`wopi: request urlDiscovery=${urlDiscovery} wopiSrcTemplate: ${wopiSrcTemplate}`);
         if (!wopiSrcTemplate) {
-            throw new Error(`wopi: wopiSrcTemplate is empty`);
+            throw new Error(`wopi: urlDiscovery=${urlDiscovery} wopiSrcTemplate is empty`);
         }
         return wopiSrcTemplate;
     }
@@ -262,6 +262,7 @@ export class DocsCoApi extends SocketIoWrapper{
         fd.append('access_token', access_token);
         fd.append('access_token_ttl', access_token_ttl.toString());
 
+        console.debug(`wopi: actionUrl=${actionUrl}`);
         const htmlRes = http.post(actionUrl, fd.body(), {
             responseType: "text",
             headers: {'Content-Type': 'multipart/form-data; boundary=' + fd.boundary},
@@ -545,6 +546,9 @@ export class DocsCoApi extends SocketIoWrapper{
         return {actionUrl, access_token, access_token_ttl, wopiSrc};
     }
     private_wopiParseHtmlResponse(html) {
+        if(html && html.includes('data-json')) {
+            return this.private_wopiParseHtmlResponseNew(html);
+        }
         //From web-apps/apps/api/wopi/editor-wopi.ejs
         //
         // fileInfo = <%- JSON.stringify(fileInfo) %>;
@@ -573,11 +577,95 @@ export class DocsCoApi extends SocketIoWrapper{
             token = res && res[1];
         }
 
-        regexp = new RegExp(`userAuth = (.*);`)
+        regexp = new RegExp(`userAuth = (.*);`);
         res = html.match(regexp);
         if (res && res[1]) {
             userAuth = JSON.parse(res && res[1]);
         }
+        return {docId, userId, token, userAuth};
+    }
+    /**
+     * Parse HTML response from the new WOPI editor format
+     * @param {string} html - HTML content from WOPI editor
+     * @returns {Object} Object containing docId, userId, token, and userAuth
+     */
+    private_wopiParseHtmlResponseNew(html) {
+        //From web-apps/apps/api/wopi/editor-wopi.ejs
+        // <div id="keyData" style="display:none;" data-json="<%= key %>"></div>
+        // <div id="fileInfoJsonData" style="display:none;" data-json="<%= JSON.stringify(fileInfo) %>"></div>
+        // <div id="userAuthJsonData" style="display:none;" data-json="<%= JSON.stringify(userAuth) %>"></div>
+        // <div id="queryParamsJsonData" style="display:none;" data-json="<%= JSON.stringify(queryParams) %>"></div>
+        // <div id="docsApiConfigJsonData" style="display:none;" data-json="<%= JSON.stringify(docs_api_config) %>"></div>
+        // var key = document.getElementById('keyData').getAttribute('data-json');
+        // var userAuth = JSON.parse(document.getElementById('userAuthJsonData').getAttribute('data-json'));
+        // var token = "<%= token %>";
+
+        let docId = '';
+        let token = '';
+        let userId = '';
+        let userAuth = null;
+        
+        /**
+         * Decode HTML entities in the string
+         * @param {string} str - HTML string to decode
+         * @returns {string} Decoded string
+         */
+        const decodeHtmlEntities = (str) => {
+            // Create a temporary element to leverage browser's built-in HTML entity decoding
+            // For numeric HTML entities like &#34;
+            let decoded = str.replace(/&#(\d+);/g, (match, dec) => {
+                return String.fromCharCode(dec);
+            });
+            
+            // For hexadecimal HTML entities
+            decoded = decoded.replace(/&#x([0-9a-f]+);/gi, (match, hex) => {
+                return String.fromCharCode(parseInt(hex, 16));
+            });
+            
+            // For named HTML entities
+            return decoded
+                .replace(/&quot;/g, '"')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&#39;/g, "'")
+                .replace(/&apos;/g, "'")
+                .replace(/&nbsp;/g, ' ');
+        };
+        
+        const keyMatch = html.match(/<div id="keyData"[^>]*data-json="([^"]*)"/);
+        if (keyMatch && keyMatch[1]) {
+            docId = decodeHtmlEntities(keyMatch[1]);
+        }
+        
+        const fileInfoMatch = html.match(/<div id="fileInfoJsonData"[^>]*data-json="([^"]*)"/);
+        if (fileInfoMatch && fileInfoMatch[1]) {
+            let jsonStr;
+            try {
+                jsonStr = decodeHtmlEntities(fileInfoMatch[1]);
+                const fileInfo = JSON.parse(jsonStr);
+                userId = fileInfo.UserId;
+            } catch (e) {
+                console.error(`Error parsing ${jsonStr} fileInfo JSON: ${e}`);
+            }
+        }
+        
+        const userAuthMatch = html.match(/<div id="userAuthJsonData"[^>]*data-json="([^"]*)"/);
+        if (userAuthMatch && userAuthMatch[1]) {
+            let jsonStr;
+            try {
+                jsonStr = decodeHtmlEntities(userAuthMatch[1]);
+                userAuth = JSON.parse(jsonStr);
+            } catch (e) {
+                console.error(`Error parsing ${jsonStr} userAuth JSON: ${e}`);
+            }
+        }
+        const regexp = new RegExp(`token = "(.*)";`)
+        const res = html.match(regexp);
+        if (res && res[1]) {
+            token = res && res[1];
+        }
+        
         return {docId, userId, token, userAuth};
     }
 }
