@@ -1,3 +1,9 @@
+# ⚠️ Deprecated — JMeter Tests
+
+> **ARCHIVED:** These tests are no longer maintained. Use the K6 suite instead: [../K6/README.md](../K6/README.md).
+
+---
+
 # ONLYOFFICE Document Server stress testing
 
 This repository describes how to run stress testing of [ONLYOFFICE Document Server][1] using JMeter.
@@ -46,4 +52,4 @@ Follow these steps:
 5. Find the WebSocket Messages tab.
 6. Cut out `changes` param from the message that starts with `["{\"type\":\"saveChanges\"`. Use it as the `changes` parameter.
 
-  [1]: https://github.com/ONLYOFFICE/DocumentServer
+[1]: https://github.com/ONLYOFFICE/DocumentServer
