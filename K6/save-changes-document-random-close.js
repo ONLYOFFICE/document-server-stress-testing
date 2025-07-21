@@ -33,7 +33,7 @@
 import exec from 'k6/execution';
 import { SharedArray } from 'k6/data';
 import { Counter } from 'k6/metrics';
-import { randomString } from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
+import { randomString } from './vendor/k6-utils/1.6.0/index.js';
 import {DocsCoApi} from "./lib/docscoapi.js";
 
 const CounterExceptions = new Counter('custom_counter_exception_all');

@@ -34,7 +34,7 @@ import http from 'k6/http';
 import { Trend, Counter } from 'k6/metrics';
 import exec from 'k6/execution';
 import encoding from 'k6/encoding';
-import { FormData } from 'https://jslib.k6.io/formdata/0.0.2/index.js';
+import { FormData } from '../vendor/formdata/0.0.2/index.js';
 import { SocketIoWrapper } from './socket.io.js';
 import { encode as jwtEncode} from './jwt.js';
 
