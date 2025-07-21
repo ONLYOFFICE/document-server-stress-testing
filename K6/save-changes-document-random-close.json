@@ -1,0 +1,32 @@
+{
+  "serverProtoSuffix": "",
+  "serverNameOrIp": "localhost",
+  "serverPort": 80,
+  "coeditorsCount": 1,
+  "persistentDocId": "",
+  "saveChangesThroughputPerMinute": 10,
+  "closeSessionPercentPerMinute": 4,
+  "docsApi" : {
+    "enable": true,
+    "documentUrl": "https://example.com/url-to-example-document",
+    "callbackUrl": "https://example.com/url-to-callback",
+    "jwtSecret": ""
+  },
+  "wopi": {
+    "enable": false,
+    "wopiHost": "https://example.com"
+  },
+  "changesPath": "dataset/9.0.0/changes.csv",
+  "downloadStaticContent": {
+    "api.js": "/web-apps/apps/api/documents/api.js",
+    "index.html": "/web-apps/apps/documenteditor/main/index.html",
+    "plugins.json": "/plugins.json"
+  },
+  "timeoutConnection": 20000,
+  "timeoutAuth": 60000,
+  "timeoutDownload": 10000,
+  "timeoutConvertion": 600000,
+  "timeoutReadTimeout": 10000,
+  "timeoutSaveLock": 500,
+  "timeoutSaveLockRandom": 100
+}
