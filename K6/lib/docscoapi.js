@@ -523,9 +523,9 @@ export class DocsCoApi extends SocketIoWrapper{
     }
 
     private_wopiGetActionUrl(discovery, action, ext) {
-        let regexp = new RegExp(`name="${action}".*?ext="${ext}".*?urlsrc="(.*?)"`)
-        let res = discovery.match(regexp);
-        return res && res[1];
+        let tags = discovery.match(/<action [^>]*>/g) || [];
+        let tag = tags.find(t => t.includes(`name="${action}"`) && t.includes(`ext="${ext}"`));
+        return tag && (tag.match(/urlsrc="([^"]*)"/) || [])[1];
     }
     private_wopiGetFormParams(wopiSrcTemplate, wopiHost, docId, userId) {
         let wopiSrc = `${wopiHost}/wopi/files/${docId}`
